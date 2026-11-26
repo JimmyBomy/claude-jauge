@@ -1,0 +1,13 @@
+{
+  "cwd": "/home/demo/app",
+  "session_id": "00000000-0000-0000-0000-000000000000",
+  "transcript_path": "/home/demo/.claude/projects/-home-demo-app/session-a.jsonl",
+  "model": { "id": "claude-sonnet-4-5", "display_name": "Sonnet" },
+  "workspace": { "current_dir": "/home/demo/app", "project_dir": "/home/demo/app" },
+  "version": "2.0.0",
+  "cost": { "total_cost_usd": 0.42, "total_duration_ms": 60000 },
+  "rate_limits": {
+    "five_hour": { "used_percentage": 62.4, "resets_at": 1795683600 },
+    "seven_day": { "used_percentage": 38, "resets_at": 1795737600 }
+  }
+}
