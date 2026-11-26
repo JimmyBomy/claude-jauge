@@ -24,7 +24,7 @@ test('gauges with forecast (French)', () => {
     '             à ce rythme, limite atteinte vers 8:40',
     'Semaine      ██████░░░░░░░░░░░░░░  32 % utilisé · 68 % restant',
     '             remise à zéro ven 1:00 (dans 17 h 59)',
-    '             à ce rythme, pas de limite avant la remise à zéro',
+    '             prévision : pas assez de points dans cette fenêtre',
   ].join('\n');
   assert.equal(out, expected);
 });

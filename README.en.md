@@ -45,6 +45,22 @@ Prefer to see what is left? `npx claude-jauge install --remaining`.
 Language: English or French, auto-detected. Force it with `--lang en` / `--lang fr` (or `CLAUDE_JAUGE_LANG`).
 French aliases work too: `rapport`, `--jours`, `--par`, `--restant`.
 
+### Windows widget
+
+A small always-visible window with a tray icon. It refreshes by itself on every Claude Code reply and shows what is
+left of the 5-hour and weekly limits, the state (normal, watch out, near limit), the reset time and today's tokens.
+
+<img src="docs/widget-dark.png" alt="claude-jauge widget, dark theme" width="360"> <img src="docs/widget-light.png" alt="claude-jauge widget, light theme" width="360">
+
+- `.exe` installer in [Releases](https://github.com/JimmyBomy/claude-jauge/releases).
+- The status line must be installed (`claude-jauge install`): it is what provides the limits.
+- Starts with Windows from the first launch. To opt out: right click the tray icon and untick "Start with Windows".
+  That choice is kept, and uninstalling also removes the startup entry.
+- Left click the tray icon to show or hide. Right click for: always on top, glass effect (semi-opaque by default,
+  Mica or Acrylic), start with Windows, quit.
+- Windows may show a SmartScreen warning on first launch: the installer is not signed (signing certificates cost
+  money). Click "More info", then "Run anyway".
+
 ![Dashboard, light theme](docs/dashboard-light.png)
 
 <details><summary>Dark theme</summary>

@@ -1,0 +1,203 @@
+/*
+ * Liquid Glass, legibility first. The window itself is transparent; the card below is
+ * semi-opaque (alpha from the shared theme) so text keeps WCAG AA contrast on any wallpaper.
+ * With the native Mica or Acrylic material behind it, the card lets more of it through.
+ */
+:root {
+  color-scheme: dark light;
+  --edge: rgba(255, 255, 255, 0.1);
+  --hi: rgba(255, 255, 255, 0.08);
+  --rim: linear-gradient(150deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.12) 22%, rgba(255, 255, 255, 0) 48%, rgba(255, 255, 255, 0.05) 72%, rgba(255, 255, 255, 0.3));
+  --native-card: rgba(20, 20, 26, 0.5);
+}
+:root[data-theme='light'] {
+  --edge: rgba(0, 0, 0, 0.08);
+  --hi: rgba(255, 255, 255, 0.6);
+  --rim: linear-gradient(150deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.5) 30%, rgba(255, 255, 255, 0.1) 60%, rgba(255, 255, 255, 0.7));
+  --native-card: rgba(255, 255, 255, 0.55);
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+html,
+body {
+  background: transparent;
+  overflow: hidden;
+}
+body {
+  font: 13px/1.4 'Segoe UI Variable Text', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  cursor: default;
+}
+.widget {
+  padding: 6px;
+}
+.glass {
+  position: relative;
+  padding: 12px 14px 12px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, var(--hi), transparent 45%), var(--card);
+  border: 1px solid var(--edge);
+  box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+:root[data-glass='mica'] .glass,
+:root[data-glass='acrylic'] .glass {
+  background: linear-gradient(180deg, var(--hi), transparent 45%), var(--native-card);
+}
+.glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: var(--rim);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.mark {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #c6ff4e, #7cc4ff);
+  display: grid;
+  place-items: center;
+}
+.mark i {
+  width: 11px;
+  height: 4px;
+  border-radius: 2px;
+  background: #0d0f14;
+  position: relative;
+  overflow: hidden;
+}
+.mark i::after {
+  content: '';
+  position: absolute;
+  inset: 0 45% 0 0;
+  background: #30d158;
+}
+.title {
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+.updated {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 11.5px;
+}
+.updated.stale {
+  color: var(--warning);
+}
+button {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+button:hover {
+  background: var(--edge);
+  color: var(--ink);
+}
+button:focus-visible {
+  outline: 2px solid #7cc4ff;
+}
+.gauge + .gauge {
+  margin-top: 10px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.label {
+  font-weight: 600;
+  color: var(--muted);
+}
+.badge {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  font-weight: 650;
+  color: var(--lv);
+}
+.badge svg {
+  width: 13px;
+  height: 13px;
+}
+.value {
+  align-items: baseline;
+  margin-top: 1px;
+}
+.big {
+  font: 700 26px/1.1 'Segoe UI Variable Display', 'Segoe UI', -apple-system, 'Inter', system-ui, sans-serif;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.left {
+  color: var(--muted);
+  font-weight: 500;
+}
+.reset {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.track {
+  height: 10px;
+  margin-top: 6px;
+  border-radius: 5px;
+  background: var(--track);
+  overflow: hidden;
+}
+.fill {
+  height: 100%;
+  border-radius: 5px;
+  background: var(--lv);
+  transition: width 0.5s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+.alert {
+  margin-top: 5px;
+  font-weight: 650;
+  color: var(--critical);
+  font-size: 12px;
+}
+.empty {
+  color: var(--muted);
+  line-height: 1.45;
+}
+footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--edge);
+  font-size: 12px;
+}
+.muted {
+  color: var(--muted);
+}
+@media (prefers-reduced-motion: reduce) {
+  .fill {
+    transition: none;
+  }
+}

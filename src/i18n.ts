@@ -74,6 +74,15 @@ Options :
   -h, --help / -v, --version
 
 Tout reste sur ta machine. Rien n'est envoyé sur Internet.`,
+  levelNormal: 'Normal',
+  levelWarning: 'Attention',
+  levelCritical: 'Limite proche',
+  widgetToday: "Aujourd'hui : {tokens} jetons",
+  widgetTopModel: '{model} {share}',
+  widgetEmpty: 'Pas encore de limites. Installe la statusLine (claude-jauge install), redémarre Claude Code et envoie-lui un message.',
+  widgetResetAt: 'reset {time}',
+  widgetLimitAt: 'limite vers {time}',
+  widgetLimitNow: 'limite atteinte',
   units: { d: 'j', h: 'h', m: 'min' },
 };
 
@@ -149,6 +158,15 @@ Options:
   -h, --help / -v, --version
 
 Everything stays on your machine. Nothing is sent over the Internet.`,
+  levelNormal: 'Normal',
+  levelWarning: 'Watch out',
+  levelCritical: 'Near limit',
+  widgetToday: 'Today: {tokens} tokens',
+  widgetTopModel: '{model} {share}',
+  widgetEmpty: 'No limits yet. Install the status line (claude-jauge install), restart Claude Code and send it a message.',
+  widgetResetAt: 'reset {time}',
+  widgetLimitAt: 'limit around {time}',
+  widgetLimitNow: 'limit reached',
   units: { d: 'd', h: 'h', m: 'min' },
 };
 

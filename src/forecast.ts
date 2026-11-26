@@ -1,4 +1,4 @@
-import { windowPoints, type Point, type WindowKey, type WindowSample } from './history.js';
+import { windowPoints, type Point, type WindowKey, type WindowSample } from './points.js';
 
 export type Forecast =
   | { kind: 'reached' }
@@ -27,8 +27,12 @@ export function linearRegression(xs: number[], ys: number[]): { slope: number; i
   return { slope, intercept: my - slope * mx };
 }
 
-/** Minimum time span covered by the points before we dare a forecast. */
-export const MIN_SPAN_SEC = 10 * 60;
+/**
+ * Minimum time span covered by the points before we dare a forecast:
+ * 10 minutes for the 5-hour window, 3 hours for the weekly one (a few minutes of a
+ * busy session say little about a whole week).
+ */
+export const MIN_SPAN_SEC: Record<WindowKey, number> = { five: 10 * 60, week: 3 * 3600 };
 
 /**
  * Simple linear regression on the points of the current window
@@ -43,7 +47,7 @@ export function forecastWindow(points: Point[], key: WindowKey, current: WindowS
   if (pts.length < 2) return { kind: 'unknown' };
   const t0 = pts[0]!.t;
   const span = pts[pts.length - 1]!.t - t0;
-  if (span < MIN_SPAN_SEC) return { kind: 'unknown' };
+  if (span < MIN_SPAN_SEC[key]) return { kind: 'unknown' };
   const reg = linearRegression(pts.map((p) => p.t - t0), pts.map((p) => p.pct));
   if (!reg) return { kind: 'unknown' };
   if (reg.slope <= 0) return { kind: 'safe' };

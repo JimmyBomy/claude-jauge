@@ -44,6 +44,23 @@ Tu préfères voir ce qui reste ? `npx claude-jauge install --restant`.
 Langue : français ou anglais, détectée automatiquement. Force-la avec `--lang fr` ou `--lang en`
 (ou la variable `CLAUDE_JAUGE_LANG`).
 
+### Widget Windows
+
+Une petite fenêtre toujours visible, avec une icône près de l'horloge. Elle se met à jour toute seule à chaque réponse de
+Claude Code et affiche le restant 5 h et semaine, l'état (normal, attention, limite proche), l'heure de remise à zéro et
+les jetons du jour.
+
+<img src="docs/widget-dark.png" alt="Widget claude-jauge, thème sombre" width="360"> <img src="docs/widget-light.png" alt="Widget claude-jauge, thème clair" width="360">
+
+- Installeur `.exe` dans les [Releases](https://github.com/JimmyBomy/claude-jauge/releases).
+- La statusLine doit être installée (`claude-jauge install`) : c'est elle qui fournit les limites.
+- Démarre tout seul avec Windows dès le premier lancement. Pour l'éviter : clic droit sur l'icône, puis décocher
+  « Lancer au démarrage de Windows ». Ce choix est conservé ; la désinstallation retire aussi l'entrée de démarrage.
+- Clic gauche sur l'icône pour afficher ou masquer. Clic droit pour : toujours au premier plan, effet verre
+  (fond semi-opaque par défaut, Mica ou Acrylique), lancement au démarrage de Windows, quitter.
+- Windows peut afficher un avertissement SmartScreen au premier lancement : l'installeur n'est pas signé
+  (un certificat de signature est payant). « Informations complémentaires » puis « Exécuter quand même ».
+
 ![Tableau de bord, thème clair](docs/dashboard-light.png)
 
 <details><summary>Thème sombre</summary>
