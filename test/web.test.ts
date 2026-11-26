@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import type { AddressInfo } from 'node:net';
-import { allowedHost, buildData, createServer } from '../src/web.js';
+import { allowedHost, buildLimits, buildTokens, createServer, TokenCache } from '../src/web.js';
 import { renderPage } from '../src/page.js';
 import { NOW, TZ, fixture } from './helpers.js';
 
@@ -37,13 +37,24 @@ test('allowedHost blocks other hosts (DNS rebinding)', () => {
   assert.equal(allowedHost(undefined, 4269), false);
 });
 
-test('buildData', async () => {
-  const d = await buildData(opts, NOW + 30);
+test('buildLimits and buildTokens', async () => {
+  const d = buildLimits(opts, NOW + 30);
   assert.equal(d.gauges.length, 2);
   assert.equal(d.gauges[0]!.forecastText, 'à ce rythme, limite atteinte vers 8:40');
   assert.equal(d.history.length, 3);
-  assert.equal(d.daily.length, 3);
-  assert.equal(d.models[0]!.key, 'sonnet-4-5');
+  const tk = await buildTokens(opts, NOW + 30);
+  assert.equal(tk.daily.length, 3);
+  assert.equal(tk.models[0]!.key, 'sonnet-4-5');
+});
+
+test('TokenCache computes once, then serves the cached value', async () => {
+  let calls = 0;
+  const cache = new TokenCache(async () => ({ n: ++calls }), 60_000);
+  const [a, b] = await Promise.all([cache.refresh(), cache.get()]);
+  assert.equal(a, '{"n":1}');
+  assert.equal(b, '{"n":1}');
+  assert.equal(await cache.get(), '{"n":1}');
+  assert.equal(calls, 1);
 });
 
 test('page is self-contained (no external URL) and has both themes', () => {
@@ -62,9 +73,11 @@ test('server serves the page and the API on loopback', async (t) => {
   assert.equal(page.status, 200);
   assert.match(page.body, /<html lang="fr">/);
   assert.match(String(page.headers['content-security-policy']), /default-src 'none'/);
-  const api = await get(port, '/api/data');
-  assert.equal(api.status, 200);
-  assert.equal(JSON.parse(api.body).lang, 'fr');
+  const limits = await get(port, '/api/limits');
+  assert.equal(limits.status, 200);
+  assert.equal(JSON.parse(limits.body).lang, 'fr');
+  const tokens = await get(port, '/api/tokens');
+  assert.equal(JSON.parse(tokens.body).models[0].key, 'sonnet-4-5');
   assert.equal((await get(port, '/nope')).status, 404);
   assert.equal((await get(port, '/', 'evil.example')).status, 403);
 });

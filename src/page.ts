@@ -9,7 +9,9 @@ const strings = {
     left: 'restant',
     used: 'utilisé',
     levels: { normal: 'Normal', warning: 'Attention', critical: 'Limite proche' },
-    noData: 'Pas encore de données. Installe la statusLine (npx claude-jauge install) puis utilise Claude Code.',
+    noData: "Pas encore de limites. Installe la statusLine (claude-jauge install), redémarre Claude Code et envoie-lui un message : les jauges apparaissent après sa première réponse (abonnement Pro ou Max).",
+    noHistory: "L'historique se remplit à chaque réponse de Claude Code, au plus un point par minute.",
+    readingSessions: 'Lecture des sessions Claude Code…',
     usageChart: 'Utilisation des limites',
     tokensChart: 'Jetons par jour',
     byModel: 'Jetons par modèle',
@@ -29,7 +31,9 @@ const strings = {
     left: 'left',
     used: 'used',
     levels: { normal: 'Normal', warning: 'Watch out', critical: 'Near limit' },
-    noData: 'No data yet. Install the status line (npx claude-jauge install), then use Claude Code.',
+    noData: 'No limits yet. Install the status line (claude-jauge install), restart Claude Code and send it a message: gauges show up after its first reply (Pro or Max plan).',
+    noHistory: 'History fills up with every Claude Code reply, at most one point per minute.',
+    readingSessions: 'Reading Claude Code sessions…',
     usageChart: 'Limit usage',
     tokensChart: 'Tokens per day',
     byModel: 'Tokens by model',
@@ -161,6 +165,7 @@ function esc(x){return String(x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','
 const nf=new Intl.NumberFormat(LOCALE);
 const cf=new Intl.NumberFormat(LOCALE,{notation:'compact',maximumFractionDigits:1});
 const pctTxt=v=>LOCALE==='fr-FR'?Math.round(v)+'\\u00a0%':Math.round(v)+'%';
+const shareTxt=v=>v>0&&v<1?(LOCALE==='fr-FR'?'<1\u00a0%':'<1%'):pctTxt(v);
 const tip=document.getElementById('tip');
 function showTip(ev,html){tip.innerHTML=html;tip.style.display='block';tip.style.left=(ev.clientX+14)+'px';tip.style.top=(ev.clientY+14)+'px';}
 function hideTip(){tip.style.display='none';}
@@ -182,7 +187,7 @@ function gauges(d){
 function usageChart(d){
   const box=document.getElementById('usage');box.innerHTML='';
   const pts=d.history;
-  if(pts.length<2){box.innerHTML='<p class="meta">'+esc(S.noData)+'</p>';return;}
+  if(pts.length<2){box.innerHTML='<p class="meta">'+esc(S.noHistory)+'</p>';return;}
   const W=900,H=260,L=40,R=12,T=12,B=28;
   const svg=el('svg',{class:'chart',viewBox:'0 0 '+W+' '+H,role:'img','aria-label':S.usageChart},box);
   const t0=pts[0].t,t1=Math.max(pts[pts.length-1].t,t0+1);
@@ -251,17 +256,27 @@ function modelTable(d){
   if(!d.models.length){box.innerHTML='<p class="meta">'+esc(S.empty)+'</p>';return;}
   const total=d.models.reduce((a,m)=>a+m.total,0)||1;
   box.innerHTML='<table><thead><tr><th>'+esc(S.model)+'</th><th>'+esc(S.tokens)+'</th><th>'+esc(S.share)+'</th></tr></thead><tbody>'+
-    d.models.map(m=>'<tr><td>'+esc(m.key)+'</td><td>'+nf.format(m.total)+'</td><td>'+pctTxt(m.total/total*100)+'</td></tr>').join('')+'</tbody></table>';
+    d.models.map(m=>'<tr><td>'+esc(m.key)+'</td><td>'+nf.format(m.total)+'</td><td>'+shareTxt(m.total/total*100)+'</td></tr>').join('')+'</tbody></table>';
 }
 
-async function load(){
+function loadingTokens(){
+  for(const id of ['tokens','models']){const b=document.getElementById(id);if(!b.firstChild)b.innerHTML='<p class="meta">'+esc(S.readingSessions)+'</p>';}
+}
+async function loadLimits(){
   try{
-    const r=await fetch('/api/data',{cache:'no-store'});const d=await r.json();
-    gauges(d);usageChart(d);tokenChart(d);modelTable(d);
+    const r=await fetch('/api/limits',{cache:'no-store'});const d=await r.json();
+    gauges(d);usageChart(d);
     document.getElementById('upd').textContent=d.updatedText||'';
   }catch(e){document.getElementById('upd').textContent='';}
 }
-load();setInterval(load,60000);
+async function loadTokens(){
+  try{
+    const r=await fetch('/api/tokens',{cache:'no-store'});const d=await r.json();
+    tokenChart(d);modelTable(d);
+  }catch(e){}
+}
+loadingTokens();loadLimits();loadTokens();
+setInterval(loadLimits,30000);setInterval(loadTokens,60000);
 </script>
 </body>
 </html>`;
