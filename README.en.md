@@ -54,6 +54,8 @@ left of the 5-hour and weekly limits, the state (normal, watch out, near limit),
 
 - `.exe` installer in [Releases](https://github.com/JimmyBomy/claude-jauge/releases).
 - The status line must be installed (`claude-jauge install`): it is what provides the limits.
+- Starts with Windows from the first launch. To opt out: right click the tray icon and untick "Start with Windows".
+  That choice is kept, and uninstalling also removes the startup entry.
 - Left click the tray icon to show or hide. Right click for: always on top, glass effect (semi-opaque by default,
   Mica or Acrylic), start with Windows, quit.
 - Windows may show a SmartScreen warning on first launch: the installer is not signed (signing certificates cost

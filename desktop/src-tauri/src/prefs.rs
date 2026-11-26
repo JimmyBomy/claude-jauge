@@ -21,11 +21,14 @@ pub enum Glass {
 pub struct Prefs {
     pub glass: Glass,
     pub always_on_top: bool,
+    /// Set once the app has turned on "start with Windows" on its first launch.
+    /// After that the user's choice from the tray menu is kept, even if they turned it off.
+    pub autostart_set: bool,
 }
 
 impl Default for Prefs {
     fn default() -> Self {
-        Prefs { glass: Glass::None, always_on_top: true }
+        Prefs { glass: Glass::None, always_on_top: true, autostart_set: false }
     }
 }
 
@@ -51,11 +54,11 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("claude-jauge-prefs-{}", std::process::id()));
         let file = dir.join("prefs.json");
         assert_eq!(load(&file), Prefs::default());
-        let p = Prefs { glass: Glass::Mica, always_on_top: false };
+        let p = Prefs { glass: Glass::Mica, always_on_top: false, autostart_set: true };
         save(&file, &p);
         assert_eq!(load(&file), p);
         fs::write(&file, r#"{"glass":"acrylic"}"#).unwrap();
-        assert_eq!(load(&file), Prefs { glass: Glass::Acrylic, always_on_top: true });
+        assert_eq!(load(&file), Prefs { glass: Glass::Acrylic, ..Prefs::default() });
         fs::write(&file, "not json").unwrap();
         assert_eq!(load(&file), Prefs::default());
         fs::remove_dir_all(&dir).unwrap();

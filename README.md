@@ -54,6 +54,8 @@ les jetons du jour.
 
 - Installeur `.exe` dans les [Releases](https://github.com/JimmyBomy/claude-jauge/releases).
 - La statusLine doit être installée (`claude-jauge install`) : c'est elle qui fournit les limites.
+- Démarre tout seul avec Windows dès le premier lancement. Pour l'éviter : clic droit sur l'icône, puis décocher
+  « Lancer au démarrage de Windows ». Ce choix est conservé ; la désinstallation retire aussi l'entrée de démarrage.
 - Clic gauche sur l'icône pour afficher ou masquer. Clic droit pour : toujours au premier plan, effet verre
   (fond semi-opaque par défaut, Mica ou Acrylique), lancement au démarrage de Windows, quitter.
 - Windows peut afficher un avertissement SmartScreen au premier lancement : l'installeur n'est pas signé

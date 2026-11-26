@@ -10,6 +10,6 @@
 - Thème partagé (`src/theme.ts`) : 3 états normal / attention / limite proche avec icône et libellé, contraste WCAG AA vérifié par les tests sur n'importe quel fond.
 - Widget Windows (Tauri 2) : fenêtre toujours visible + icône près de l'horloge, mise à jour en temps réel par
   surveillance des fichiers, jetons du jour lus de façon incrémentale, effet verre au choix (semi-opaque, Mica, Acrylique),
-  lancement au démarrage, installeur `.exe` publié par GitHub Actions.
+  lancement au démarrage activé par défaut (désactivable depuis l'icône), installeur `.exe` publié par GitHub Actions.
 - Prévision hebdomadaire seulement après 3 h de relevés, pour éviter les extrapolations hasardeuses.
 - FR / EN, Node 20+, zéro dépendance à l'exécution pour la CLI.

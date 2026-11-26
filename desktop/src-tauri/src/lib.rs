@@ -242,7 +242,13 @@ pub fn run() {
         .plugin(tauri_plugin_autostart::init(tauri_plugin_autostart::MacosLauncher::LaunchAgent, None))
         .setup(|app| {
             let prefs_file = app.path().app_config_dir()?.join("prefs.json");
-            let prefs = prefs::load(&prefs_file);
+            let mut prefs = prefs::load(&prefs_file);
+            // Start with Windows by default: turned on at the first launch only,
+            // so turning it off from the tray menu is respected afterwards.
+            if !prefs.autostart_set && app.autolaunch().enable().is_ok() {
+                prefs.autostart_set = true;
+                prefs::save(&prefs_file, &prefs);
+            }
             app.manage(AppState {
                 scanner: Mutex::new(usage::Scanner::new(paths::projects_dir())),
                 prefs: Mutex::new(prefs.clone()),
