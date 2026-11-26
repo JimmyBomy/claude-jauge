@@ -49,8 +49,8 @@ test('buildData', async () => {
 test('page is self-contained (no external URL) and has both themes', () => {
   const html = renderPage('en');
   assert.doesNotMatch(html, /(src|href)=["']https?:/);
-  assert.match(html, /prefers-color-scheme:dark/);
-  assert.match(html, /data-theme=dark/);
+  assert.match(html, /prefers-color-scheme:light/);
+  assert.match(html, /data-theme=light/);
 });
 
 test('server serves the page and the API on loopback', async (t) => {
@@ -67,4 +67,12 @@ test('server serves the page and the API on loopback', async (t) => {
   assert.equal(JSON.parse(api.body).lang, 'fr');
   assert.equal((await get(port, '/nope')).status, 404);
   assert.equal((await get(port, '/', 'evil.example')).status, 403);
+});
+
+test('page uses the shared theme tokens for both themes', () => {
+  const html = renderPage('fr');
+  assert.match(html, /--normal:#30d158/);
+  assert.match(html, /--normal:#146c2e/);
+  assert.match(html, /prefers-reduced-transparency/);
+  assert.match(html, /prefers-reduced-motion/);
 });

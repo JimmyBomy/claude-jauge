@@ -4,6 +4,7 @@ import { readHistory } from './history.js';
 import { t, type Lang } from './i18n.js';
 import { duration, shortWhen } from './format.js';
 import { renderPage } from './page.js';
+import { levelOf } from './theme.js';
 import { aggregate } from './report.js';
 import { loadUsage } from './sessions.js';
 
@@ -27,6 +28,7 @@ export async function buildData(o: DashboardOptions, nowSec = Math.floor(Date.no
       return {
         key: w.key,
         used: w.hasReset ? 0 : s.pct,
+        level: levelOf(w.hasReset ? 0 : s.pct),
         reset: s.reset,
         resetText: w.hasReset
           ? t(o.lang, 'windowReset', { time: shortWhen(s.reset, nowSec, fo) })
