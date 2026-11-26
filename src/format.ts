@@ -1,4 +1,5 @@
 import { messages, type Lang } from './i18n.js';
+import { levelOf } from './theme.js';
 
 export interface FormatOptions {
   lang: Lang;
@@ -97,9 +98,7 @@ export function paint(c: Colors, color: keyof typeof codes, text: string): strin
 }
 
 export function levelColor(usedPct: number): 'green' | 'yellow' | 'red' {
-  if (usedPct >= 80) return 'red';
-  if (usedPct >= 50) return 'yellow';
-  return 'green';
+  return ({ normal: 'green', warning: 'yellow', critical: 'red' } as const)[levelOf(usedPct)];
 }
 
 /** Respects NO_COLOR (https://no-color.org) and FORCE_COLOR. */
