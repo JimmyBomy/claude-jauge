@@ -17,7 +17,7 @@ const fr = {
   stale: 'attention : dernières données vieilles de {ago}, lance Claude Code pour les rafraîchir',
   windowReset: 'fenêtre remise à zéro à {time}, en attente de nouvelles données',
   noData:
-    "Aucune donnée pour l'instant.\nInstalle la statusLine avec « npx claude-jauge install », puis utilise Claude Code (abonnement Pro ou Max).",
+    "Aucune donnée pour l'instant.\nInstalle la statusLine avec « claude-jauge install », redémarre Claude Code et envoie-lui un message (abonnement Pro ou Max).",
   forecastHit: 'à ce rythme, limite atteinte vers {time}',
   forecastSafe: 'à ce rythme, pas de limite avant la remise à zéro',
   forecastUnknown: 'prévision : pas assez de points dans cette fenêtre',
@@ -92,7 +92,7 @@ const en: typeof fr = {
   stale: 'note: latest data is {ago} old, use Claude Code to refresh it',
   windowReset: 'window reset at {time}, waiting for new data',
   noData:
-    'No data yet.\nInstall the status line with "npx claude-jauge install", then use Claude Code (Pro or Max plan).',
+    'No data yet.\nInstall the status line with "claude-jauge install", restart Claude Code and send it a message (Pro or Max plan).',
   forecastHit: 'at this pace, limit reached around {time}',
   forecastSafe: 'at this pace, no limit before the reset',
   forecastUnknown: 'forecast: not enough points in this window',

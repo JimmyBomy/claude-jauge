@@ -9,7 +9,8 @@ const off = { enabled: false };
 test('no data: explains how to start', () => {
   const out = renderGauges(computeState([], NOW), 'fr', off, TZ);
   assert.match(out, /Aucune donnée/);
-  assert.match(out, /npx claude-jauge install/);
+  assert.match(out, /claude-jauge install/);
+  assert.match(out, /redémarre Claude Code/);
 });
 
 test('gauges with forecast (French)', () => {
