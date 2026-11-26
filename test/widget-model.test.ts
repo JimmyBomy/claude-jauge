@@ -49,7 +49,7 @@ test('widget view: the desktop app explains what is missing and offers one click
   const foreign = view({ link: { state: 'foreign', command: 'bash ~/.claude/my-very-long-status-line-script-with-options.sh --all' } });
   assert.equal(foreign.action?.kind, 'replace');
   assert.match(foreign.emptyText ?? '', /\(bash ~\/\.claude\/my-very-long-status-line-script-…\)/);
-  assert.match(view({ link: { state: 'linked' } }).emptyText ?? '', /^Branché à Claude Code\. Redémarre-le/);
+  assert.match(view({ link: { state: 'linked' } }).emptyText ?? '', /^Branché\. .*dans un terminal .*l'appli Claude ne les transmet pas/);
   assert.match(view({ link: { state: 'linked' }, seen: { t: NOW, limits: false } }).emptyText ?? '', /Pro ou Max/);
   assert.match(view({ link: { state: 'badJson' } }).emptyText ?? '', /settings\.json/);
   assert.equal(view({ link: { state: 'linked' } }).action, undefined);

@@ -58,6 +58,9 @@ les jetons du jour.
   c'est l'`.exe` lui-même qui sert de statusLine.
 - Si tu as déjà une autre statusLine, elle n'est jamais remplacée sans ton accord : le widget propose un bouton.
   La désinstallation remet celle que tu avais avant.
+- Les limites arrivent uniquement quand tu utilises Claude Code **dans un terminal** (commande `claude`) :
+  l'appli Claude n'exécute pas la statusLine. Tes limites étant communes à l'appli et au terminal, un message envoyé
+  depuis le terminal suffit à afficher ton pourcentage réel. Les jetons du jour, eux, s'affichent dans tous les cas.
 - Les limites n'existent qu'avec un abonnement Pro ou Max (connexion par `/login`, pas par clé API). Si rien n'arrive,
   le widget dit pourquoi, et `claude-jauge doctor` vérifie toute la chaîne.
 - Démarre tout seul avec Windows dès le premier lancement. Pour l'éviter : clic droit sur l'icône, puis décocher

@@ -14,5 +14,7 @@
 - Le widget se branche tout seul à Claude Code : l'`.exe` sert lui-même de statusLine (pas besoin de Node),
   sauvegarde de `settings.json`, aucune statusLine existante remplacée sans accord, restauration à la désinstallation.
 - Messages clairs dans le widget quand les limites n'arrivent pas, et commande `doctor` pour tout vérifier.
+- Le widget et le README précisent que les limites viennent de Claude Code dans un terminal : l'appli Claude
+  n'exécute pas la statusLine.
 - Prévision hebdomadaire seulement après 3 h de relevés, pour éviter les extrapolations hasardeuses.
 - FR / EN, Node 20+, zéro dépendance à l'exécution pour la CLI.
