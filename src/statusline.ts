@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { appendPoint, type Point, type WindowSample } from './history.js';
 import { t, type Lang } from './i18n.js';
 import { colorsFor, levelColor, paint, pct, shortWhen, type Colors } from './format.js';
@@ -74,6 +76,8 @@ export function renderLine(limits: { five?: WindowSample; week?: WindowSample },
 export interface StatuslineRun {
   stdin: string;
   historyFile: string;
+  /** Where to note that the status line ran and whether limits came with it. */
+  seenFile?: string;
   lang: Lang;
   nowSec: number;
   remaining?: boolean;
@@ -93,6 +97,7 @@ export function runStatusline(r: StatuslineRun): string {
       // Read-only home, full disk…: still show the line.
     }
   }
+  if (r.seenFile) writeSeen(r.seenFile, { t: r.nowSec, limits: Boolean(limits.five || limits.week) });
   // Claude Code renders ANSI colors even though stdout is a pipe.
   const colors = colorsFor(true, r.env ?? process.env);
   return renderLine(limits, {
@@ -102,4 +107,28 @@ export function runStatusline(r: StatuslineRun): string {
     remaining: r.remaining,
     timeZone: r.timeZone,
   });
+}
+
+export interface Seen {
+  t: number;
+  limits: boolean;
+}
+
+/**
+ * Lets the widget tell "status line not running" from "running, but Claude Code sends no limits".
+ * Written at most once a minute unless the answer changes. Best effort.
+ */
+export function writeSeen(file: string, seen: Seen): void {
+  try {
+    try {
+      const old = JSON.parse(fs.readFileSync(file, 'utf8')) as Partial<Seen>;
+      if (old.limits === seen.limits && typeof old.t === 'number' && seen.t - old.t < 60) return;
+    } catch {
+      // no previous file
+    }
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, JSON.stringify(seen), 'utf8');
+  } catch {
+    // never break the status line for this
+  }
 }

@@ -29,3 +29,17 @@ pub fn jauge_dir() -> PathBuf {
 pub fn history_file() -> PathBuf {
     jauge_dir().join("historique.jsonl")
 }
+
+/// Proof of life written by the status line (see statusline.rs).
+pub fn seen_file() -> PathBuf {
+    jauge_dir().join("statusline-vu.json")
+}
+
+pub fn settings_file() -> PathBuf {
+    claude_dir().join("settings.json")
+}
+
+/// Shared with the Node CLI: what we installed and the status line that was there before.
+pub fn install_state_file() -> PathBuf {
+    jauge_dir().join("install.json")
+}

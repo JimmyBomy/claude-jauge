@@ -1,8 +1,10 @@
 //! claude-jauge desktop widget: a small always-on-top window and a tray icon.
 //! Data comes only from local files written by Claude Code and by the claude-jauge status line.
 
+mod link;
 mod paths;
 mod prefs;
+pub mod statusline;
 mod usage;
 
 use notify::{RecursiveMode, Watcher};
@@ -46,6 +48,31 @@ fn daily_usage(state: tauri::State<'_, AppState>) -> usage::DailyUsage {
 #[tauri::command]
 fn get_prefs(state: tauri::State<'_, AppState>) -> Prefs {
     state.prefs.lock().map(|p| p.clone()).unwrap_or_default()
+}
+
+#[tauri::command]
+fn link_status() -> link::LinkStatus {
+    link::status(&link::Files::default_paths())
+}
+
+/// Plugs the widget into Claude Code. `force` replaces another status line (the user said yes).
+#[tauri::command]
+fn link_claude(force: bool) -> link::LinkStatus {
+    match std::env::current_exe() {
+        Ok(exe) => link::connect(&link::Files::default_paths(), &link::build_command(&exe), force, &link::stamp_now()),
+        Err(_) => link_status(),
+    }
+}
+
+/// When the status line last ran, and whether Claude Code sent limits that time.
+#[tauri::command]
+fn statusline_seen() -> Option<statusline::Seen> {
+    statusline::read_seen(&paths::seen_file())
+}
+
+/// Run by the uninstaller: puts back the status line the user had before.
+pub fn disconnect() {
+    link::disconnect(&link::Files::default_paths(), &link::stamp_now());
 }
 
 fn main_window(app: &AppHandle) -> Option<WebviewWindow> {
@@ -230,6 +257,19 @@ fn watch_files(app: AppHandle) {
     });
 }
 
+/// The page shows the window after its first render. If that never comes (slow WebView2
+/// start), show it anyway: right after install the widget must be visible, not only in the tray.
+fn show_soon(app: AppHandle) {
+    std::thread::spawn(move || {
+        std::thread::sleep(Duration::from_millis(2500));
+        if let Some(window) = main_window(&app) {
+            if !window.is_visible().unwrap_or(true) {
+                let _ = window.show();
+            }
+        }
+    });
+}
+
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
@@ -249,6 +289,10 @@ pub fn run() {
                 prefs.autostart_set = true;
                 prefs::save(&prefs_file, &prefs);
             }
+            // Plug into Claude Code at launch, so there is nothing to type. Does nothing if it
+            // is already plugged in, and a status line the user already has is left alone:
+            // the widget asks first.
+            link_claude(false);
             app.manage(AppState {
                 scanner: Mutex::new(usage::Scanner::new(paths::projects_dir())),
                 prefs: Mutex::new(prefs.clone()),
@@ -258,7 +302,8 @@ pub fn run() {
             let handle = app.handle().clone();
             build_tray(&handle)?;
             apply_prefs(&handle, &prefs);
-            watch_files(handle);
+            watch_files(handle.clone());
+            show_soon(handle);
             Ok(())
         })
         .on_window_event(|window, event| {
@@ -268,7 +313,7 @@ pub fn run() {
                 let _ = window.hide();
             }
         })
-        .invoke_handler(tauri::generate_handler![read_history, daily_usage, get_prefs])
+        .invoke_handler(tauri::generate_handler![read_history, daily_usage, get_prefs, link_status, link_claude, statusline_seen])
         .run(tauri::generate_context!())
         .expect("claude-jauge failed to start");
 }

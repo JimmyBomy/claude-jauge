@@ -36,7 +36,8 @@ function gauge(w: WidgetWindow, lang: 'fr' | 'en'): string {
 
 /** The widget markup. Every text comes from the pure view model and is escaped. */
 export function renderWidget(v: WidgetView): string {
-  const body = v.emptyText ? `<p class="empty">${esc(v.emptyText)}</p>` : v.windows.map((w) => gauge(w, v.lang)).join('');
+  const action = v.action ? `<button type="button" class="action" data-action="${v.action.kind}">${esc(v.action.label)}</button>` : '';
+  const body = v.emptyText ? `<p class="empty">${esc(v.emptyText)}</p>${action}` : v.windows.map((w) => gauge(w, v.lang)).join('');
   const footer =
     v.todayText !== undefined
       ? `<footer><span>${esc(v.todayText)}</span>${v.topModelText ? `<span class="muted">${esc(v.topModelText)}</span>` : ''}</footer>`

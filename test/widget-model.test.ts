@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildWidgetView } from '../src/widget-model.js';
+import { buildWidgetView, type SetupInfo } from '../src/widget-model.js';
 import { NOW, TZ, readFixture } from './helpers.js';
 
 const history = readFixture('history-sample.jsonl');
@@ -40,4 +40,18 @@ test('widget view: a window past its reset shows 100 % left', () => {
   assert.equal(five.leftText, '100%');
   assert.equal(five.level, 'normal');
   assert.match(five.resetText, /window reset at 10:00/);
+});
+
+test('widget view: the desktop app explains what is missing and offers one click', () => {
+  const view = (setup: SetupInfo) => buildWidgetView('', undefined, NOW, 'fr', TZ, setup);
+  const notLinked = view({ link: { state: 'notLinked' } });
+  assert.deepEqual(notLinked.action, { kind: 'link', label: 'Brancher à Claude Code' });
+  const foreign = view({ link: { state: 'foreign', command: 'bash ~/.claude/my-very-long-status-line-script-with-options.sh --all' } });
+  assert.equal(foreign.action?.kind, 'replace');
+  assert.match(foreign.emptyText ?? '', /\(bash ~\/\.claude\/my-very-long-status-line-script-…\)/);
+  assert.match(view({ link: { state: 'linked' } }).emptyText ?? '', /^Branché à Claude Code\. Redémarre-le/);
+  assert.match(view({ link: { state: 'linked' }, seen: { t: NOW, limits: false } }).emptyText ?? '', /Pro ou Max/);
+  assert.match(view({ link: { state: 'badJson' } }).emptyText ?? '', /settings\.json/);
+  assert.equal(view({ link: { state: 'linked' } }).action, undefined);
+  assert.doesNotMatch(notLinked.emptyText ?? '', /claude-jauge install/, 'no command to type for .exe users');
 });

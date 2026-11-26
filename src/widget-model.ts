@@ -31,8 +31,33 @@ export interface WidgetView {
   windows: WidgetWindow[];
   /** Shown instead of the gauges when no limit was ever recorded. */
   emptyText?: string;
+  /** A button under emptyText, when one click can fix it. */
+  action?: { kind: 'link' | 'replace'; label: string };
   todayText?: string;
   topModelText?: string;
+}
+
+/** What the desktop app knows about its link with Claude Code. */
+export interface SetupInfo {
+  link: { state: 'linked' | 'notLinked' | 'badJson' } | { state: 'foreign'; command: string };
+  /** Last run of the status line, and whether limits came with it. */
+  seen?: { t: number; limits: boolean } | null;
+}
+
+function emptyState(lang: Lang, setup: SetupInfo | undefined): Pick<WidgetView, 'emptyText' | 'action'> {
+  if (!setup) return { emptyText: t(lang, 'widgetEmpty') };
+  switch (setup.link.state) {
+    case 'notLinked':
+      return { emptyText: t(lang, 'widgetNotLinked'), action: { kind: 'link', label: t(lang, 'widgetLinkAction') } };
+    case 'foreign': {
+      const command = setup.link.command.length > 48 ? `${setup.link.command.slice(0, 47)}…` : setup.link.command;
+      return { emptyText: t(lang, 'widgetForeign', { command }), action: { kind: 'replace', label: t(lang, 'widgetReplaceAction') } };
+    }
+    case 'badJson':
+      return { emptyText: t(lang, 'widgetBadJson') };
+    case 'linked':
+      return { emptyText: t(lang, setup.seen && !setup.seen.limits ? 'widgetNoLimitsSent' : 'widgetLinked') };
+  }
 }
 
 const LEVEL_KEY = { normal: 'levelNormal', warning: 'levelWarning', critical: 'levelCritical' } as const;
@@ -46,7 +71,7 @@ function shortModel(model: string): string {
  * Everything the widget displays, computed from raw inputs. Pure and synchronous,
  * so the same code is unit tested here and runs inside the desktop webview.
  */
-export function buildWidgetView(historyText: string, usage: DailyUsage | undefined, nowSec: number, lang: Lang, timeZone?: string): WidgetView {
+export function buildWidgetView(historyText: string, usage: DailyUsage | undefined, nowSec: number, lang: Lang, timeZone?: string, setup?: SetupInfo): WidgetView {
   const state = computeState(parseHistory(historyText), nowSec);
   const fo = { lang, timeZone };
   const windows: WidgetWindow[] = [];
@@ -78,7 +103,7 @@ export function buildWidgetView(historyText: string, usage: DailyUsage | undefin
     stale: ago !== undefined && ago > STALE_SEC,
     windows,
   };
-  if (windows.length === 0) view.emptyText = t(lang, 'widgetEmpty');
+  if (windows.length === 0) Object.assign(view, emptyState(lang, setup));
 
   if (usage && usage.total > 0) {
     view.todayText = t(lang, 'widgetToday', { tokens: compact(usage.total, lang) });

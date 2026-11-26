@@ -91,3 +91,19 @@ test('runStatusline still prints when the history cannot be written', (t) => {
   });
   assert.match(line, /^5h: 62%/);
 });
+
+test('runStatusline notes each run, with or without limits, for the widget', (t) => {
+  const dir = tmpDir();
+  t.after(() => rm(dir));
+  const historyFile = path.join(dir, 'historique.jsonl');
+  const seenFile = path.join(dir, 'statusline-vu.json');
+  const seen = () => JSON.parse(fs.readFileSync(seenFile, 'utf8')) as unknown;
+  const run = (fixture: string, nowSec: number) =>
+    runStatusline({ stdin: readFixture('statusline', fixture), historyFile, seenFile, lang: 'en', nowSec, env: {} });
+  run('no-limits.json', NOW);
+  assert.deepEqual(seen(), { t: NOW, limits: false });
+  run('no-limits.json', NOW + 30);
+  assert.deepEqual(seen(), { t: NOW, limits: false }, 'same answer within a minute: not rewritten');
+  run('full.json', NOW + 40);
+  assert.deepEqual(seen(), { t: NOW + 40, limits: true });
+});
