@@ -28,3 +28,11 @@ test('t interpolates and keeps unknown placeholders', () => {
   assert.equal(t('fr', 'forecastHit', { time: '16:00' }), 'à ce rythme, limite atteinte vers 16:00');
   assert.equal(t('en', 'forecastHit'), 'at this pace, limit reached around {time}');
 });
+
+test('visible texts use no long dash', async () => {
+  const { renderPage } = await import('../src/page.js');
+  const texts = [...Object.values(messages.fr), ...Object.values(messages.en), renderPage('fr'), renderPage('en')]
+    .map((v) => (typeof v === 'string' ? v : JSON.stringify(v)))
+    .join('\n');
+  assert.doesNotMatch(texts, /[–—]/);
+});
