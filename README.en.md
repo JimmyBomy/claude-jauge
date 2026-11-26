@@ -58,6 +58,9 @@ left of the 5-hour and weekly limits, the state (normal, watch out, near limit),
   status line.
 - If you already have another status line, it is never replaced without your consent: the widget offers a button.
   Uninstalling puts back the one you had.
+- Limits only arrive when you use Claude Code **in a terminal** (the `claude` command): the Claude app does not run the
+  status line. Since your limits are shared between the app and the terminal, one message sent from the terminal is
+  enough to show your real percentage. Today's tokens show up in every case.
 - Limits only exist with a Pro or Max plan (signed in with `/login`, not with an API key). If nothing arrives, the widget
   says why, and `claude-jauge doctor` checks the whole chain.
 - Starts with Windows from the first launch. To opt out: right click the tray icon and untick "Start with Windows".
