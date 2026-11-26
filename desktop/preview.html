@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>claude-jauge widget preview</title>
+    <link rel="stylesheet" href="/src/widget.css" />
+    <style>
+      html, body { overflow: auto; }
+      body { margin: 0; padding: 24px; display: flex; flex-wrap: wrap; gap: 24px; background: #111; }
+      .wall { width: 380px; padding: 24px; border-radius: 14px; }
+      .wall.aurora { background: radial-gradient(60% 70% at 18% 10%, #0fd2e6, transparent 70%), radial-gradient(60% 70% at 88% 25%, #2a6bff, transparent 70%), radial-gradient(70% 70% at 55% 105%, #ff5a3c, transparent 72%), linear-gradient(160deg, #2f4dff, #5b2bd6 45%, #1a0a3a); }
+      .wall.white { background: #ffffff; }
+      .wall.busy { background: repeating-linear-gradient(45deg, #f4d35e 0 18px, #0d3b66 18px 36px, #ee964b 36px 54px, #faf0ca 54px 72px); }
+      .wall.black { background: #000; }
+    </style>
+  </head>
+  <body>
+    <div id="previews"></div>
+    <script type="module" src="/src/preview.ts"></script>
+  </body>
+</html>

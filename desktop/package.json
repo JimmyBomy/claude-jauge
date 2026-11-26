@@ -1,0 +1,22 @@
+{
+  "name": "claude-jauge-desktop",
+  "private": true,
+  "version": "0.1.0",
+  "description": "claude-jauge Windows widget (Tauri 2).",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "tauri": "tauri",
+    "preview:build": "vite build -c vite.preview.config.ts"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "~2.12.5"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "~2.12.6",
+    "typescript": "~5.9.3",
+    "vite": "~8.4.0"
+  }
+}

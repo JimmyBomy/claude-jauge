@@ -1,0 +1,42 @@
+name: Release
+
+# Pushing a tag like v0.1.0 builds the Windows installer and publishes it in GitHub Releases.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            desktop/package-lock.json
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: desktop/src-tauri
+      - run: npm ci
+      - run: npm test
+      - run: npm ci
+        working-directory: desktop
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: desktop
+          tagName: ${{ github.ref_name }}
+          releaseName: claude-jauge ${{ github.ref_name }}
+          releaseBody: |
+            Windows installer for the claude-jauge widget. See CHANGELOG.md for what changed.
+            Installeur Windows du widget claude-jauge. Voir CHANGELOG.md pour les nouveautés.
+          releaseDraft: false
+          prerelease: false

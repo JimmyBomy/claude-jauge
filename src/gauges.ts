@@ -1,5 +1,5 @@
 import { forecastWindow, type Forecast } from './forecast.js';
-import type { Point, WindowKey, WindowSample } from './history.js';
+import type { Point, WindowKey, WindowSample } from './points.js';
 import { t, type Lang } from './i18n.js';
 import { bar, duration, levelColor, paint, pct, shortWhen, type Colors } from './format.js';
 

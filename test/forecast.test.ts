@@ -18,9 +18,18 @@ test('hit: 30 %/h from 50 % at 6:00 UTC → 100 % at 7:40 UTC, before the 9:00 r
   assert.deepEqual(f, { kind: 'hit', at: NOW + 100 * 60 });
 });
 
-test('safe: the weekly window grows too slowly', () => {
+test('weekly window: one hour of points is not enough to forecast', () => {
   const pts = readHistory(fixture('history-sample.jsonl'));
-  assert.deepEqual(forecastWindow(pts, 'week', pts[2]!.week!, NOW), { kind: 'safe' });
+  assert.deepEqual(forecastWindow(pts, 'week', pts[2]!.week!, NOW), { kind: 'unknown' });
+});
+
+test('safe: the window grows too slowly to reach 100 % before the reset', () => {
+  const reset = NOW + 3600;
+  const pts = [
+    { t: NOW - 1800, five: { pct: 10, reset } },
+    { t: NOW, five: { pct: 12, reset } },
+  ];
+  assert.deepEqual(forecastWindow(pts, 'five', { pct: 12, reset }, NOW), { kind: 'safe' });
 });
 
 test('safe when usage is flat', () => {
@@ -50,4 +59,18 @@ test('points of a previous window are ignored', () => {
 
 test('reached', () => {
   assert.deepEqual(forecastWindow([], 'five', { pct: 100, reset: NOW + 60 }, NOW), { kind: 'reached' });
+});
+
+test('weekly forecast waits for at least 3 hours of points', () => {
+  const reset = NOW + 3 * 86400;
+  const short = [
+    { t: NOW - 3000, week: { pct: 30, reset } },
+    { t: NOW - 60, week: { pct: 40, reset } },
+  ];
+  assert.deepEqual(forecastWindow(short, 'week', { pct: 40, reset }, NOW), { kind: 'unknown' });
+  const long = [
+    { t: NOW - 4 * 3600, week: { pct: 10, reset } },
+    { t: NOW, week: { pct: 50, reset } },
+  ];
+  assert.equal(forecastWindow(long, 'week', { pct: 50, reset }, NOW).kind, 'hit');
 });
