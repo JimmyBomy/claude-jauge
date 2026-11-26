@@ -23,6 +23,11 @@ export function jaugeDir(env: Env = process.env): string {
   return custom ? path.resolve(custom) : path.join(os.homedir(), '.claude-jauge');
 }
 
+/** Proof of life of the status line, read by the desktop widget. */
+export function seenFile(env: Env = process.env): string {
+  return path.join(jaugeDir(env), 'statusline-vu.json');
+}
+
 export function historyFile(env: Env = process.env): string {
   return path.join(jaugeDir(env), 'historique.jsonl');
 }

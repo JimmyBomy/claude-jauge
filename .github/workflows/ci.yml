@@ -82,6 +82,18 @@ jobs:
         if: runner.os == 'Windows'
         run: npm run tauri build
         working-directory: desktop
+      - name: Smoke test (the .exe as a status line, piped through Git Bash like Claude Code)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          exe=$(ls desktop/src-tauri/target/release/*.exe | head -1)
+          export CLAUDE_JAUGE_HOME="$RUNNER_TEMP/jauge"
+          reset=$(( $(date +%s) + 3600 ))
+          line=$(echo "{\"rate_limits\":{\"five_hour\":{\"used_percentage\":62,\"resets_at\":$reset}}}" | NO_COLOR=1 "$exe" statusline)
+          echo "$line"
+          echo "$line" | grep -E "62 ?%"
+          grep -q '"pct":62' "$CLAUDE_JAUGE_HOME/historique.jsonl"
+          grep -q '"limits":true' "$CLAUDE_JAUGE_HOME/statusline-vu.json"
       - name: Upload the installer
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@v4

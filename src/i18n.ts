@@ -61,6 +61,7 @@ Utilisation :
   npx claude-jauge uninstall    la retire (et restaure l'ancienne)
   npx claude-jauge rapport      jetons par jour, semaine et modèle
   npx claude-jauge web          tableau de bord local sur http://127.0.0.1:4269
+  npx claude-jauge doctor       vérifie pourquoi les limites arrivent ou pas
 
 Options :
   --lang fr|en       langue (sinon détection automatique)
@@ -80,6 +81,13 @@ Tout reste sur ta machine. Rien n'est envoyé sur Internet.`,
   widgetToday: "Aujourd'hui : {tokens} jetons",
   widgetTopModel: '{model} {share}',
   widgetEmpty: 'Pas encore de limites. Installe la statusLine (claude-jauge install), redémarre Claude Code et envoie-lui un message.',
+  widgetLinked: 'Branché à Claude Code. Redémarre-le et envoie-lui un message : tes limites s\'afficheront ici.',
+  widgetNotLinked: 'Pas encore branché à Claude Code.',
+  widgetLinkAction: 'Brancher à Claude Code',
+  widgetForeign: 'Claude Code a déjà une autre statusLine ({command}). claude-jauge en a besoin pour recevoir tes limites.',
+  widgetReplaceAction: 'La remplacer (sauvegarde gardée)',
+  widgetBadJson: 'Le fichier de réglages de Claude Code (settings.json) est illisible. Corrige-le, puis relance claude-jauge.',
+  widgetNoLimitsSent: 'Claude Code ne transmet pas de limites. Elles n\'existent qu\'avec un abonnement Pro ou Max (connexion avec /login), pas avec une clé API.',
   widgetResetAt: 'reset {time}',
   widgetLimitAt: 'limite vers {time}',
   widgetLimitNow: 'limite atteinte',
@@ -145,6 +153,7 @@ Usage:
   npx claude-jauge uninstall    remove it (and restore the previous one)
   npx claude-jauge report       tokens by day, week and model  (alias: rapport)
   npx claude-jauge web          local dashboard on http://127.0.0.1:4269
+  npx claude-jauge doctor       checks why limits arrive or not
 
 Options:
   --lang fr|en       language (auto-detected otherwise)
@@ -163,6 +172,13 @@ Everything stays on your machine. Nothing is sent over the Internet.`,
   levelCritical: 'Near limit',
   widgetToday: 'Today: {tokens} tokens',
   widgetTopModel: '{model} {share}',
+  widgetLinked: 'Plugged into Claude Code. Restart it and send it a message: your limits will show up here.',
+  widgetNotLinked: 'Not plugged into Claude Code yet.',
+  widgetLinkAction: 'Plug into Claude Code',
+  widgetForeign: 'Claude Code already has another status line ({command}). claude-jauge needs it to receive your limits.',
+  widgetReplaceAction: 'Replace it (a backup is kept)',
+  widgetBadJson: 'The Claude Code settings file (settings.json) cannot be read. Fix it, then restart claude-jauge.',
+  widgetNoLimitsSent: 'Claude Code sends no limits. They only exist with a Pro or Max plan (signed in with /login), not with an API key.',
   widgetEmpty: 'No limits yet. Install the status line (claude-jauge install), restart Claude Code and send it a message.',
   widgetResetAt: 'reset {time}',
   widgetLimitAt: 'limit around {time}',

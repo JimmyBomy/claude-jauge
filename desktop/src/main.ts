@@ -3,7 +3,7 @@ import { listen } from '@tauri-apps/api/event';
 import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window';
 import { detectLang } from '../../src/i18n.js';
 import { cssVars, palettes } from '../../src/theme.js';
-import { buildWidgetView, type DailyUsage, type WidgetView } from '../../src/widget-model.js';
+import { buildWidgetView, type DailyUsage, type SetupInfo, type WidgetView } from '../../src/widget-model.js';
 import { renderWidget } from './render.js';
 
 type Glass = 'none' | 'mica' | 'acrylic';
@@ -41,13 +41,20 @@ async function fitWindow(): Promise<void> {
 
 let shown = false;
 async function refresh(): Promise<void> {
-  const [history, usage] = await Promise.all([
+  const [history, usage, link, seen] = await Promise.all([
     invoke<string>('read_history').catch(() => ''),
     invoke<DailyUsage>('daily_usage').catch(() => undefined),
+    invoke<SetupInfo['link']>('link_status').catch(() => undefined),
+    invoke<SetupInfo['seen']>('statusline_seen').catch(() => null),
   ]);
-  const view: WidgetView = buildWidgetView(history, usage, Math.floor(Date.now() / 1000), lang);
+  const setup: SetupInfo | undefined = link ? { link, seen } : undefined;
+  const view: WidgetView = buildWidgetView(history, usage, Math.floor(Date.now() / 1000), lang, undefined, setup);
   app.innerHTML = renderWidget(view);
   app.querySelector<HTMLButtonElement>('[data-action="hide"]')?.addEventListener('click', () => void win.hide());
+  app.querySelector<HTMLButtonElement>('[data-action="link"], [data-action="replace"]')?.addEventListener('click', (e) => {
+    const force = (e.currentTarget as HTMLElement).dataset.action === 'replace';
+    void invoke('link_claude', { force }).finally(() => void refresh());
+  });
   await fitWindow();
   if (!shown) {
     shown = true;

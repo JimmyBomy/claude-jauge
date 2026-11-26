@@ -53,7 +53,13 @@ left of the 5-hour and weekly limits, the state (normal, watch out, near limit),
 <img src="docs/widget-dark.png" alt="claude-jauge widget, dark theme" width="360"> <img src="docs/widget-light.png" alt="claude-jauge widget, light theme" width="360">
 
 - `.exe` installer in [Releases](https://github.com/JimmyBomy/claude-jauge/releases).
-- The status line must be installed (`claude-jauge install`): it is what provides the limits.
+- Nothing to set up: at launch the widget plugs itself into Claude Code (it adds its status line to
+  `~/.claude/settings.json`, with a backup). Then restart Claude Code. Node is not needed: the `.exe` itself is the
+  status line.
+- If you already have another status line, it is never replaced without your consent: the widget offers a button.
+  Uninstalling puts back the one you had.
+- Limits only exist with a Pro or Max plan (signed in with `/login`, not with an API key). If nothing arrives, the widget
+  says why, and `claude-jauge doctor` checks the whole chain.
 - Starts with Windows from the first launch. To opt out: right click the tray icon and untick "Start with Windows".
   That choice is kept, and uninstalling also removes the startup entry.
 - Left click the tray icon to show or hide. Right click for: always on top, glass effect (semi-opaque by default,

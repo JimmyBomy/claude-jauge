@@ -11,5 +11,8 @@
 - Widget Windows (Tauri 2) : fenêtre toujours visible + icône près de l'horloge, mise à jour en temps réel par
   surveillance des fichiers, jetons du jour lus de façon incrémentale, effet verre au choix (semi-opaque, Mica, Acrylique),
   lancement au démarrage activé par défaut (désactivable depuis l'icône), installeur `.exe` publié par GitHub Actions.
+- Le widget se branche tout seul à Claude Code : l'`.exe` sert lui-même de statusLine (pas besoin de Node),
+  sauvegarde de `settings.json`, aucune statusLine existante remplacée sans accord, restauration à la désinstallation.
+- Messages clairs dans le widget quand les limites n'arrivent pas, et commande `doctor` pour tout vérifier.
 - Prévision hebdomadaire seulement après 3 h de relevés, pour éviter les extrapolations hasardeuses.
 - FR / EN, Node 20+, zéro dépendance à l'exécution pour la CLI.

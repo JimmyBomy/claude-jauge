@@ -53,7 +53,13 @@ les jetons du jour.
 <img src="docs/widget-dark.png" alt="Widget claude-jauge, thème sombre" width="360"> <img src="docs/widget-light.png" alt="Widget claude-jauge, thème clair" width="360">
 
 - Installeur `.exe` dans les [Releases](https://github.com/JimmyBomy/claude-jauge/releases).
-- La statusLine doit être installée (`claude-jauge install`) : c'est elle qui fournit les limites.
+- Rien à configurer : au lancement, le widget se branche tout seul à Claude Code (il ajoute sa statusLine dans
+  `~/.claude/settings.json`, avec une sauvegarde). Il suffit ensuite de redémarrer Claude Code. Node n'est pas nécessaire :
+  c'est l'`.exe` lui-même qui sert de statusLine.
+- Si tu as déjà une autre statusLine, elle n'est jamais remplacée sans ton accord : le widget propose un bouton.
+  La désinstallation remet celle que tu avais avant.
+- Les limites n'existent qu'avec un abonnement Pro ou Max (connexion par `/login`, pas par clé API). Si rien n'arrive,
+  le widget dit pourquoi, et `claude-jauge doctor` vérifie toute la chaîne.
 - Démarre tout seul avec Windows dès le premier lancement. Pour l'éviter : clic droit sur l'icône, puis décocher
   « Lancer au démarrage de Windows ». Ce choix est conservé ; la désinstallation retire aussi l'entrée de démarrage.
 - Clic gauche sur l'icône pour afficher ou masquer. Clic droit pour : toujours au premier plan, effet verre

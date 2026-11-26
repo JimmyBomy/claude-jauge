@@ -3,9 +3,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { diagnose } from './doctor.js';
 import { colorsFor } from './format.js';
 import { computeState, renderGauges } from './gauges.js';
-import { historyFile, jaugeDir, projectsDir } from './paths.js';
+import { historyFile, seenFile, jaugeDir, projectsDir } from './paths.js';
 import { readHistory } from './history.js';
 import { detectLang, t, type Lang } from './i18n.js';
 import { aggregate, renderTable, totals, type GroupBy } from './report.js';
@@ -50,6 +51,8 @@ const COMMANDS: Record<string, string> = {
   rapport: 'report',
   report: 'report',
   web: 'web',
+  doctor: 'doctor',
+  diagnostic: 'doctor',
   help: 'help',
   aide: 'help',
 };
@@ -113,6 +116,7 @@ export async function main(argv: string[]): Promise<number> {
         line = runStatusline({
           stdin: await readStdin(),
           historyFile: historyFile(),
+          seenFile: seenFile(),
           lang,
           nowSec,
           remaining: Boolean(flags.remaining || flags.restant),
@@ -123,6 +127,10 @@ export async function main(argv: string[]): Promise<number> {
       out(line);
       return 0;
     }
+
+    case 'doctor':
+      out(diagnose(lang, nowSec).join('\n'));
+      return 0;
 
     case 'gauges': {
       const state = computeState(readHistory(historyFile()), nowSec);
