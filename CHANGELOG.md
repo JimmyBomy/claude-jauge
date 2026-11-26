@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 (non publiée / unreleased)
+## 0.1.0 (2026-11-27)
 
 - `install` / `uninstall` : statusLine dans `~/.claude/settings.json`, avec sauvegarde et restauration.
 - statusLine : ligne courte 5 h + semaine, historique local (1 point par minute au plus).
@@ -16,5 +16,6 @@
 - Messages clairs dans le widget quand les limites n'arrivent pas, et commande `doctor` pour tout vérifier.
 - Le widget et le README précisent que les limites viennent de Claude Code dans un terminal : l'appli Claude
   n'exécute pas la statusLine.
+- Widget : la barre montre le restant, comme le gros chiffre (elle se vide à mesure que tu consommes).
 - Prévision hebdomadaire seulement après 3 h de relevés, pour éviter les extrapolations hasardeuses.
 - FR / EN, Node 20+, zéro dépendance à l'exécution pour la CLI.
