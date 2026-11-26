@@ -18,6 +18,8 @@ export function esc(value: string): string {
 
 function gauge(w: WidgetWindow, lang: 'fr' | 'en'): string {
   const used = Math.min(100, Math.max(0, w.usedPct));
+  // Like a fuel gauge: the bar shows what is left, same as the big number, and drains as you use Claude.
+  const left = 100 - used;
   return `<section class="gauge" style="--lv:var(--${w.level})">
   <div class="row">
     <span class="label">${esc(w.label)}</span>
@@ -27,8 +29,8 @@ function gauge(w: WidgetWindow, lang: 'fr' | 'en'): string {
     <span class="big">${esc(w.leftText)}</span><span class="left">${LEFT[lang]}</span>
     <span class="reset">${esc(w.resetText)}</span>
   </div>
-  <div class="track" role="progressbar" aria-label="${esc(w.label)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(used)}">
-    <div class="fill" style="width:${used}%"></div>
+  <div class="track" role="progressbar" aria-label="${esc(w.label)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(left)}" aria-valuetext="${esc(w.leftText)} ${LEFT[lang]}">
+    <div class="fill" style="width:${left}%"></div>
   </div>
   ${w.alertText ? `<div class="alert">${esc(w.alertText)}</div>` : ''}
 </section>`;
