@@ -112,11 +112,11 @@ claude-jauge fait une chose plus étroite :
 
 | | claude-jauge | ccusage |
 | --- | --- | --- |
-| Pourcentages **officiels** restants (5 h, semaine), tels que Claude Code les reçoit | ✅ | — |
-| Historique de ces pourcentages et prévision de l'heure de blocage | ✅ | — |
-| Tableau de bord local avec graphiques | ✅ | — |
-| Coûts en dollars, tarifs par modèle | — | ✅ |
-| Autres outils que Claude Code | — | ✅ |
+| Pourcentages **officiels** restants (5 h, semaine), tels que Claude Code les reçoit | ✅ | ❌ |
+| Historique de ces pourcentages et prévision de l'heure de blocage | ✅ | ❌ |
+| Tableau de bord local avec graphiques | ✅ | ❌ |
+| Coûts en dollars, tarifs par modèle | ❌ | ✅ |
+| Autres outils que Claude Code | ❌ | ✅ |
 | Rapports jetons par jour / semaine / modèle | ✅ (simple) | ✅ (bien plus riche) |
 | Réseau | aucun | ping d'usage anonyme quotidien, désactivable (voir leur README) |
 

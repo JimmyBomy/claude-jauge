@@ -53,7 +53,7 @@ const fr = {
   webListening: 'Tableau de bord : {url}  (Ctrl+C pour arrêter)',
   webPortBusy: 'Le port {port} est déjà utilisé. Essaie --port 4270.',
   unknownCommand: 'Commande inconnue : {cmd}',
-  help: `claude-jauge {version} — combien il te reste de tes limites Claude (Pro/Max)
+  help: `claude-jauge {version} : combien il te reste de tes limites Claude (Pro/Max)
 
 Utilisation :
   npx claude-jauge              jauges 5 h et semaine + prévision
@@ -128,7 +128,7 @@ const en: typeof fr = {
   webListening: 'Dashboard: {url}  (Ctrl+C to stop)',
   webPortBusy: 'Port {port} is already in use. Try --port 4270.',
   unknownCommand: 'Unknown command: {cmd}',
-  help: `claude-jauge {version} — how much of your Claude limits (Pro/Max) is left
+  help: `claude-jauge {version}: how much of your Claude limits (Pro/Max) is left
 
 Usage:
   npx claude-jauge              5-hour and weekly gauges + forecast

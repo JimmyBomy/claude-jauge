@@ -110,11 +110,11 @@ claude-jauge does one narrower thing:
 
 | | claude-jauge | ccusage |
 | --- | --- | --- |
-| **Official** remaining percentages (5h, week), as Claude Code receives them | ✅ | — |
-| History of those percentages and forecast of when you will be blocked | ✅ | — |
-| Local dashboard with charts | ✅ | — |
-| Dollar costs, per-model pricing | — | ✅ |
-| Tools other than Claude Code | — | ✅ |
+| **Official** remaining percentages (5h, week), as Claude Code receives them | ✅ | ❌ |
+| History of those percentages and forecast of when you will be blocked | ✅ | ❌ |
+| Local dashboard with charts | ✅ | ❌ |
+| Dollar costs, per-model pricing | ❌ | ✅ |
+| Tools other than Claude Code | ❌ | ✅ |
 | Token reports by day / week / model | ✅ (basic) | ✅ (much richer) |
 | Network | none | anonymous daily usage ping, can be turned off (see their README) |
 
