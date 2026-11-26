@@ -1,0 +1,7 @@
+{"type":"user","timestamp":"2026-11-23T08:59:00.000Z","sessionId":"demo-a","message":{"role":"user","content":"Exemple inventé : ajoute un bouton"}}
+{"type":"assistant","timestamp":"2026-11-23T09:00:00.000Z","sessionId":"demo-a","requestId":"req_demo_1","message":{"id":"msg_demo_1","model":"claude-sonnet-4-5-20250929","role":"assistant","content":[{"type":"text","text":"ok"}],"usage":{"input_tokens":1000,"output_tokens":200,"cache_creation_input_tokens":3000,"cache_read_input_tokens":10000}}}
+{"type":"assistant","timestamp":"2026-11-23T09:00:01.000Z","sessionId":"demo-a","requestId":"req_demo_1","message":{"id":"msg_demo_1","model":"claude-sonnet-4-5-20250929","role":"assistant","content":[{"type":"tool_use","name":"Edit"}],"usage":{"input_tokens":1000,"output_tokens":200,"cache_creation_input_tokens":3000,"cache_read_input_tokens":10000}}}
+{"type":"assistant","timestamp":"2026-11-23T10:30:00.000Z","sessionId":"demo-a","requestId":"req_demo_2","message":{"id":"msg_demo_2","model":"claude-opus-4-5-20251101","role":"assistant","content":[],"usage":{"input_tokens":500,"output_tokens":1500,"cache_creation_input_tokens":0,"cache_read_input_tokens":20000}}}
+{"type":"assistant","timestamp":"2026-11-23T10:31:00.000Z","sessionId":"demo-a","message":{"id":"msg_demo_synth","model":"<synthetic>","role":"assistant","content":[],"usage":{"input_tokens":0,"output_tokens":0}}}
+this line is broken on purpose {
+{"type":"summary","summary":"Démo"}
