@@ -2,9 +2,19 @@
   "name": "claude-jauge",
   "version": "0.1.0",
   "description": "See how much of your Claude Pro/Max limits is left while you use Claude Code: status line, history, forecast, token reports. 100% local, zero dependencies.",
-  "keywords": ["claude", "claude-code", "statusline", "usage", "rate-limit", "tokens", "cli"],
+  "keywords": [
+    "claude",
+    "claude-code",
+    "statusline",
+    "usage",
+    "rate-limit",
+    "limits",
+    "tokens",
+    "cli",
+    "windows"
+  ],
   "license": "MIT",
-  "author": "Jimmy (https://github.com/JimmyBomy)",
+  "author": "Jimmy Bomy (https://jimmybomy.fr)",
   "homepage": "https://github.com/JimmyBomy/claude-jauge#readme",
   "repository": {
     "type": "git",
@@ -28,7 +38,8 @@
     "build": "node scripts/clean.mjs && tsc -p tsconfig.json",
     "test": "npm run build && node scripts/run-tests.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test"
   },
   "devDependencies": {
     "@types/node": "^20.19.0",

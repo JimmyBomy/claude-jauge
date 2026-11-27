@@ -26,6 +26,7 @@ const shots: [string, string][] = [
   ['busy', states.busy],
   ['critical', states.critical],
   ['empty', ''],
+  ['reset', [JSON.stringify({ t: now - 9 * 3600, five: { pct: 64, reset: now - 3 * 3600 }, week: { pct: 20, reset: week } })].join('\n')],
 ];
 root.innerHTML = shots
   .map(([name, text], i) => {
