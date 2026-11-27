@@ -10,6 +10,11 @@ Une ligne dans la barre d'état, un historique, une prévision et un petit table
 
 [English version](README.en.md)
 
+![Démo : le widget se met à jour pendant que Claude Code travaille, puis le tableau de bord](docs/demo.gif)
+
+**Windows :** [télécharger l'installeur](https://github.com/JimmyBomy/claude-jauge/releases/latest), lance-le, c'est branché.
+<sub>Démo réalisée avec des données inventées.</sub>
+
 ![Jauges dans le terminal et statusLine](docs/terminal.png)
 
 ## Installation
