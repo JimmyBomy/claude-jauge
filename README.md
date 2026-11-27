@@ -15,6 +15,15 @@ Une ligne dans la barre d'état, un historique, une prévision et un petit table
 **Windows :** [télécharger l'installeur](https://github.com/JimmyBomy/claude-jauge/releases/latest), lance-le, c'est branché.
 <sub>Démo réalisée avec des données inventées.</sub>
 
+## Pourquoi claude-jauge ?
+
+- **Un vrai widget Windows.** Un installeur `.exe` d'environ 1 Mo, une petite fenêtre toujours visible qui démarre avec Windows. Pas besoin d'ouvrir un terminal pour savoir où tu en es.
+- **Une prévision, pas seulement un chiffre.** « À ce rythme, limite atteinte vers 16:40 » : tu sais avant d'être bloqué.
+- **Les pourcentages officiels.** Les limites 5 h et semaine telles que Claude Code les reçoit, pas une estimation.
+- **Un design soigné et accessible.** Clair ou sombre, effet verre, et le contraste AA des couleurs est vérifié par les tests.
+- **Français et anglais**, détectés automatiquement.
+- **Zéro dépendance à l'exécution** pour la CLI, et **rien n'est envoyé sur Internet**.
+
 ![Jauges dans le terminal et statusLine](docs/terminal.png)
 
 ## Installation

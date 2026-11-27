@@ -16,6 +16,15 @@ A status line, a history, a forecast and a small dashboard. Everything stays on 
 **Windows:** [download the installer](https://github.com/JimmyBomy/claude-jauge/releases/latest), run it, it is plugged in.
 <sub>Demo made with invented data.</sub>
 
+## Why claude-jauge?
+
+- **A real Windows widget.** An `.exe` installer of about 1 MB, a small always-visible window that starts with Windows. No need to open a terminal to see where you stand.
+- **A forecast, not just a number.** "At this pace, limit reached around 16:40": you know before you get blocked.
+- **The official percentages.** The 5-hour and weekly limits exactly as Claude Code receives them, not an estimate.
+- **A polished, accessible design.** Light or dark, glass effect, and AA colour contrast is checked by the tests.
+- **French and English**, detected automatically.
+- **Zero runtime dependencies** for the CLI, and **nothing is sent over the Internet**.
+
 ![Terminal gauges and status line](docs/terminal.png)
 
 ## Install
