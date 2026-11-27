@@ -147,16 +147,24 @@ button:focus-visible {
   margin-top: 1px;
 }
 .big {
+  flex: none;
+  white-space: nowrap;
   font: 700 26px/1.1 'Segoe UI Variable Display', 'Segoe UI', -apple-system, 'Inter', system-ui, sans-serif;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
 .left {
+  flex: none;
+  white-space: nowrap;
   color: var(--muted);
   font-weight: 500;
 }
 .reset {
   margin-left: auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: var(--muted);
   font-size: 12px;
   font-variant-numeric: tabular-nums;
@@ -173,6 +181,12 @@ button:focus-visible {
   border-radius: 5px;
   background: var(--lv);
   transition: width 0.5s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+.note {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
 }
 .alert {
   margin-top: 5px;

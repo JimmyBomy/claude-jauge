@@ -22,6 +22,8 @@ export interface WidgetWindow {
   resetText: string;
   /** Only set when the limit is expected before the reset, or already reached. */
   alertText?: string;
+  /** Neutral explanation under the bar (for example after a reset). */
+  noteText?: string;
 }
 
 export interface WidgetView {
@@ -63,6 +65,14 @@ function emptyState(lang: Lang, setup: SetupInfo | undefined): Pick<WidgetView, 
 const LEVEL_KEY = { normal: 'levelNormal', warning: 'levelWarning', critical: 'levelCritical' } as const;
 const STALE_SEC = 30 * 60;
 
+/** "claude-opus-4-5-20251101" becomes "Opus 4.5". */
+export function modelName(model: string): string {
+  const m = /^(?:claude-)?([a-z]+)-(\d+)(?:-(\d{1,2}))?(?:-\d{8})?$/.exec(model);
+  if (!m) return shortModel(model);
+  const family = m[1]!.charAt(0).toUpperCase() + m[1]!.slice(1);
+  return m[3] ? `${family} ${m[2]}.${m[3]}` : `${family} ${m[2]}`;
+}
+
 function shortModel(model: string): string {
   return model.replace(/^claude-/, '').replace(/-\d{8}$/, '');
 }
@@ -89,10 +99,9 @@ export function buildWidgetView(historyText: string, usage: DailyUsage | undefin
       leftText: pct(100 - used, lang),
       level,
       levelLabel: t(lang, LEVEL_KEY[level]),
-      resetText: w.hasReset
-        ? t(lang, 'windowReset', { time: shortWhen(w.sample.reset, nowSec, fo) })
-        : t(lang, 'widgetResetAt', { time: shortWhen(w.sample.reset, nowSec, fo) }),
+      resetText: w.hasReset ? t(lang, 'widgetNewWindow') : t(lang, 'widgetResetAt', { time: shortWhen(w.sample.reset, nowSec, fo) }),
       alertText,
+      ...(w.hasReset ? { noteText: t(lang, 'widgetWaiting', { time: shortWhen(w.sample.reset, nowSec, fo) }) } : {}),
     });
   }
 
@@ -109,7 +118,7 @@ export function buildWidgetView(historyText: string, usage: DailyUsage | undefin
     view.todayText = t(lang, 'widgetToday', { tokens: compact(usage.total, lang) });
     const top = Object.entries(usage.byModel).sort((a, b) => b[1] - a[1])[0];
     if (top) {
-      view.topModelText = t(lang, 'widgetTopModel', { model: shortModel(top[0]), share: pct((top[1] / usage.total) * 100, lang) });
+      view.topModelText = t(lang, 'widgetTopModel', { model: modelName(top[0]), share: pct((top[1] / usage.total) * 100, lang) });
     }
   }
   return view;
