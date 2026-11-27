@@ -182,6 +182,36 @@ node scripts/demo-data.mjs /tmp/demo   # fake dataset for screenshots
 
 Useful variables: `CLAUDE_CONFIG_DIR` (Claude Code folder, as Claude Code itself), `CLAUDE_JAUGE_HOME`, `NO_COLOR`.
 
+## How I built it
+
+**My part.** The idea comes from my own need: knowing where I stand with my Claude limits without leaving my work. I decided:
+- the specification and the project rules: official and local sources only, no scraping, nothing sent over the Internet, no stored key, zero dependencies for the CLI;
+- the technical choices: TypeScript and Node for the CLI, Tauri 2 for the Windows widget;
+- the design direction: the Liquid Glass style of my portfolio, readable in half a second on any wallpaper, three colour states.
+
+I tested every version on my Windows PC. My feedback shaped the tool:
+- automatic plugging in, so there is no command to type;
+- starting with Windows;
+- explaining the Claude app case;
+- bars consistent with the big number;
+- the display after a reset;
+- the one-click dashboard.
+
+I approved every pull request before it was merged.
+
+**The AI's part.** The code was written with [Claude Code](https://claude.com/claude-code) (Anthropic), following my instructions. It wrote most of the TypeScript and Rust, the tests, the CI and a good part of the texts. Work moved forward in small PRs that I reviewed and tested.
+
+**Technical choices that matter:**
+- **The real percentages.** Limits come from the official JSON Claude Code sends to its status line: no estimate, no access to my account.
+- **A light widget.** Tauri rather than Electron gives an installer of about 1 MB. The `.exe` is its own status line, so users do not need Node.
+- **One source of truth.** The maths (gauges, forecast, dashboard) are pure TypeScript functions, tested on invented data and shared by the CLI, the dashboard and the widget.
+- **Accessible and checked.** WCAG AA colour contrast is checked by the tests, and each state has an icon and a label, not just a colour.
+
+**What the project taught me.**
+- Testing on a real machine reveals what CI cannot see. The Claude app does not run the status line: only a real try showed it, and it changed the documentation and the widget's messages.
+- A "no step" tool means handling every edge case: an existing status line, the backup, a clean uninstall.
+- Being honest about data sources is a design choice, not just a line in the README.
+
 ## License
 
 [MIT](LICENSE) © Jimmy ([JimmyBomy](https://github.com/JimmyBomy)). Independent project, not affiliated with Anthropic.

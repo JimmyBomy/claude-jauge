@@ -186,6 +186,36 @@ node scripts/demo-data.mjs /tmp/demo   # jeu de données fictif pour les capture
 Variables utiles : `CLAUDE_CONFIG_DIR` (dossier de Claude Code, comme Claude Code lui-même), `CLAUDE_JAUGE_HOME`
 (dossier de claude-jauge), `NO_COLOR`.
 
+## Comment je l'ai fait
+
+**Ma part.** L'idée vient d'un besoin à moi : savoir où j'en suis de mes limites Claude sans quitter mon travail. J'ai décidé :
+- le cahier des charges et les règles du projet : sources officielles et locales uniquement, pas de scraping, rien envoyé sur Internet, aucune clé stockée, zéro dépendance pour la CLI ;
+- les choix techniques : TypeScript et Node pour la CLI, Tauri 2 pour le widget Windows ;
+- la direction du design : style Liquid Glass de mon portfolio, lisible en une demi-seconde sur n'importe quel fond, trois états de couleur.
+
+J'ai testé chaque version sur mon PC Windows. Mes retours ont fait évoluer l'outil :
+- le branchement automatique, pour qu'il n'y ait aucune commande à taper ;
+- le démarrage avec Windows ;
+- l'explication du cas de l'appli Claude ;
+- les barres cohérentes avec le chiffre ;
+- l'affichage après une remise à zéro ;
+- le tableau de bord en un clic.
+
+J'ai validé chaque pull request avant sa fusion.
+
+**La part de l'IA.** Le code a été écrit avec [Claude Code](https://claude.com/claude-code) (Anthropic), à partir de mes consignes. Il a écrit l'essentiel du TypeScript et du Rust, les tests, la CI et une bonne partie des textes. Le travail a avancé par petites PR que je relisais et testais.
+
+**Les choix techniques qui comptent :**
+- **Les vrais pourcentages.** Les limites viennent du JSON officiel que Claude Code envoie à sa statusLine : aucune estimation, aucun accès à mon compte.
+- **Un widget léger.** Tauri plutôt qu'Electron donne un installeur d'environ 1 Mo. L'`.exe` sert lui-même de statusLine, donc les utilisateurs n'ont pas besoin de Node.
+- **Une seule source de vérité.** Les calculs (jauges, prévision, tableau de bord) sont des fonctions pures en TypeScript, testées avec des données inventées et partagées par la CLI, le tableau de bord et le widget.
+- **Accessible et vérifié.** Le contraste WCAG AA des couleurs est vérifié par les tests, et l'icône et le libellé de chaque état ne reposent pas sur la couleur seule.
+
+**Ce que le projet m'a appris.**
+- Le test sur une vraie machine révèle ce que la CI ne voit pas. L'appli Claude n'exécute pas la statusLine : seul un essai réel l'a montré, et il a changé la documentation et les messages du widget.
+- Un outil « sans étape » demande de traiter tous les cas limites : une statusLine déjà en place, la sauvegarde, la désinstallation propre.
+- Être honnête sur les sources de données est un choix de conception, pas une simple ligne dans le README.
+
 ## Licence
 
 [MIT](LICENSE) © Jimmy ([JimmyBomy](https://github.com/JimmyBomy)). Projet indépendant, non affilié à Anthropic.
