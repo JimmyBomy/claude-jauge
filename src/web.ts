@@ -1,10 +1,8 @@
 import http from 'node:http';
-import { computeState, forecastText } from './gauges.js';
 import { readHistory } from './history.js';
-import { t, type Lang } from './i18n.js';
-import { duration, shortWhen } from './format.js';
+import type { Lang } from './i18n.js';
+import { limitsView } from './dashboard-data.js';
 import { renderPage } from './page.js';
-import { levelOf } from './theme.js';
 import { aggregate } from './report.js';
 import { loadUsage } from './sessions.js';
 
@@ -18,39 +16,7 @@ export interface DashboardOptions {
 
 /** Limits and their history: only reads the small claude-jauge history file, so it is instant. */
 export function buildLimits(o: DashboardOptions, nowSec = Math.floor(Date.now() / 1000)) {
-  const sinceSec = nowSec - o.days * 86400;
-  const points = readHistory(o.historyFile);
-  const state = computeState(points, nowSec);
-  const fo = { lang: o.lang, timeZone: o.timeZone };
-  const gauges = state.windows
-    .filter((w) => w.sample)
-    .map((w) => {
-      const s = w.sample!;
-      return {
-        key: w.key,
-        used: w.hasReset ? 0 : s.pct,
-        level: levelOf(w.hasReset ? 0 : s.pct),
-        reset: s.reset,
-        resetText: w.hasReset
-          ? t(o.lang, 'windowReset', { time: shortWhen(s.reset, nowSec, fo) })
-          : t(o.lang, 'resetLong', { time: shortWhen(s.reset, nowSec, fo), in: duration(s.reset - nowSec, o.lang) }),
-        forecastKind: w.hasReset ? 'unknown' : w.forecast.kind,
-        forecastText: w.hasReset ? '' : forecastText(w.forecast, nowSec, o.lang, o.timeZone),
-      };
-    });
-  const updatedText =
-    state.updatedAt === undefined
-      ? ''
-      : nowSec - state.updatedAt < 60
-        ? t(o.lang, 'updatedNow')
-        : t(o.lang, 'updatedAgo', { ago: duration(nowSec - state.updatedAt, o.lang) });
-  return {
-    now: nowSec,
-    lang: o.lang,
-    updatedText,
-    gauges,
-    history: points.filter((p) => p.t >= sinceSec),
-  };
+  return limitsView(readHistory(o.historyFile), o, nowSec);
 }
 
 /** Token totals from the Claude Code session files: can take a few seconds on a large history. */

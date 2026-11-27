@@ -10,6 +10,7 @@ const ICONS = {
 } as const;
 
 const HIDE = { fr: 'Masquer', en: 'Hide' } as const;
+const DASHBOARD = { fr: 'Ouvrir le tableau de bord', en: 'Open the dashboard' } as const;
 const LEFT = { fr: 'restant', en: 'left' } as const;
 
 export function esc(value: string): string {
@@ -50,6 +51,9 @@ export function renderWidget(v: WidgetView): string {
     <span class="mark" aria-hidden="true"><i></i></span>
     <span class="title">claude-jauge</span>
     <span class="updated${v.stale ? ' stale' : ''}">${esc(v.updatedText)}</span>
+    <button type="button" data-action="dashboard" aria-label="${DASHBOARD[v.lang]}" title="${DASHBOARD[v.lang]}">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 20V11M12 20V5M19 20v-6"/></svg>
+    </button>
     <button type="button" data-action="hide" aria-label="${HIDE[v.lang]}" title="${HIDE[v.lang]}">
       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
     </button>

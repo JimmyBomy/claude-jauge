@@ -79,6 +79,8 @@ les jetons du jour.
   le widget dit pourquoi, et `claude-jauge doctor` vérifie toute la chaîne.
 - Démarre tout seul avec Windows dès le premier lancement. Pour l'éviter : clic droit sur l'icône, puis décocher
   « Lancer au démarrage de Windows ». Ce choix est conservé ; la désinstallation retire aussi l'entrée de démarrage.
+- **Tableau de bord en un clic** : le bouton graphique du widget, un double-clic sur le widget ou « Ouvrir le tableau de bord »
+  dans le menu de l'icône. Mêmes graphiques que `claude-jauge web`, avec tes vraies données, sans Node.
 - Clic gauche sur l'icône pour afficher ou masquer. Clic droit pour : toujours au premier plan, effet verre
   (fond semi-opaque par défaut, Mica ou Acrylique), lancement au démarrage de Windows, quitter.
 - Windows peut afficher un avertissement SmartScreen au premier lancement : l'installeur n'est pas signé

@@ -15,7 +15,7 @@ use std::sync::Mutex;
 use std::time::Duration;
 use tauri::menu::{CheckMenuItem, Menu, MenuItem, PredefinedMenuItem, Submenu};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
-use tauri::{AppHandle, Emitter, Manager, WebviewWindow, Wry};
+use tauri::{AppHandle, Emitter, Manager, WebviewUrl, WebviewWindow, WebviewWindowBuilder, Wry};
 use tauri_plugin_autostart::ManagerExt;
 
 /// Enough history for the current 7-day window at one point per minute.
@@ -129,6 +129,43 @@ fn sync_menu(app: &AppHandle) {
     };
 }
 
+/// The whole history file, for the dashboard's charts (it is pruned above 4 MB).
+#[tauri::command]
+fn read_history_all() -> String {
+    usage::tail(&paths::history_file(), 8 * 1024 * 1024)
+}
+
+/// Tokens per local day and model over the last `days` days, for the dashboard.
+/// Reads the session files on a background thread: it can take a moment on a large history.
+#[tauri::command]
+async fn usage_by_day(days: u32) -> Vec<usage::DayModelTokens> {
+    let now = chrono::Local::now().fixed_offset();
+    let start = now.date_naive() - chrono::Days::new(u64::from(days.clamp(1, 366)) - 1);
+    let since = start
+        .and_hms_opt(0, 0, 0)
+        .and_then(|d| d.and_local_timezone(*now.offset()).single())
+        .unwrap_or(now);
+    tauri::async_runtime::spawn_blocking(move || usage::by_day(&paths::projects_dir(), since)).await.unwrap_or_default()
+}
+
+/// Opens the dashboard in its own window, or brings it to the front if it is already open.
+#[tauri::command]
+fn open_dashboard(app: AppHandle) {
+    if let Some(window) = app.get_webview_window("dashboard") {
+        let _ = window.unminimize();
+        let _ = window.show();
+        let _ = window.set_focus();
+        return;
+    }
+    let title = labels().dashboard_title;
+    let _ = WebviewWindowBuilder::new(&app, "dashboard", WebviewUrl::App("dashboard.html".into()))
+        .title(title)
+        .inner_size(1080.0, 860.0)
+        .min_inner_size(420.0, 480.0)
+        .center()
+        .build();
+}
+
 fn toggle_window(app: &AppHandle) {
     if let Some(window) = main_window(app) {
         if window.is_visible().unwrap_or(false) {
@@ -141,6 +178,8 @@ fn toggle_window(app: &AppHandle) {
 }
 
 struct Labels {
+    dashboard: &'static str,
+    dashboard_title: &'static str,
     toggle: &'static str,
     on_top: &'static str,
     glass: &'static str,
@@ -155,6 +194,8 @@ fn labels() -> Labels {
     let french = sys_locale::get_locale().is_some_and(|l| l.to_lowercase().starts_with("fr"));
     if french {
         Labels {
+            dashboard: "Ouvrir le tableau de bord",
+            dashboard_title: "claude-jauge, tableau de bord",
             toggle: "Afficher ou masquer",
             on_top: "Toujours au premier plan",
             glass: "Effet verre",
@@ -166,6 +207,8 @@ fn labels() -> Labels {
         }
     } else {
         Labels {
+            dashboard: "Open the dashboard",
+            dashboard_title: "claude-jauge, dashboard",
             toggle: "Show or hide",
             on_top: "Always on top",
             glass: "Glass effect",
@@ -181,6 +224,7 @@ fn labels() -> Labels {
 fn build_tray(app: &AppHandle) -> tauri::Result<()> {
     let l = labels();
     let prefs = app.state::<AppState>().prefs.lock().map(|p| p.clone()).unwrap_or_default();
+    let dashboard = MenuItem::with_id(app, "dashboard", l.dashboard, true, None::<&str>)?;
     let toggle = MenuItem::with_id(app, "toggle", l.toggle, true, None::<&str>)?;
     let on_top = CheckMenuItem::with_id(app, "on_top", l.on_top, true, prefs.always_on_top, None::<&str>)?;
     let none = CheckMenuItem::with_id(app, "glass_none", l.none, true, prefs.glass == Glass::None, None::<&str>)?;
@@ -191,7 +235,7 @@ fn build_tray(app: &AppHandle) -> tauri::Result<()> {
     let autostart = CheckMenuItem::with_id(app, "autostart", l.autostart, true, autostart_on, None::<&str>)?;
     let quit = MenuItem::with_id(app, "quit", l.quit, true, None::<&str>)?;
     let separator = PredefinedMenuItem::separator(app)?;
-    let menu = Menu::with_items(app, &[&toggle, &separator, &on_top, &glass, &autostart, &separator, &quit])?;
+    let menu = Menu::with_items(app, &[&dashboard, &toggle, &separator, &on_top, &glass, &autostart, &separator, &quit])?;
 
     if let Ok(mut guard) = app.state::<AppState>().menu.lock() {
         *guard = Some(MenuItems {
@@ -206,6 +250,7 @@ fn build_tray(app: &AppHandle) -> tauri::Result<()> {
         .menu(&menu)
         .show_menu_on_left_click(false)
         .on_menu_event(|app, event| match event.id.as_ref() {
+            "dashboard" => open_dashboard(app.clone()),
             "toggle" => toggle_window(app),
             "on_top" => update_prefs(app, |p| p.always_on_top = !p.always_on_top),
             "glass_none" => update_prefs(app, |p| p.glass = Glass::None),
@@ -308,12 +353,25 @@ pub fn run() {
         })
         .on_window_event(|window, event| {
             // Closing the widget hides it: the app keeps running in the tray.
+            // The dashboard window closes normally.
             if let tauri::WindowEvent::CloseRequested { api, .. } = event {
-                api.prevent_close();
-                let _ = window.hide();
+                if window.label() == "main" {
+                    api.prevent_close();
+                    let _ = window.hide();
+                }
             }
         })
-        .invoke_handler(tauri::generate_handler![read_history, daily_usage, get_prefs, link_status, link_claude, statusline_seen])
+        .invoke_handler(tauri::generate_handler![
+            read_history,
+            read_history_all,
+            daily_usage,
+            usage_by_day,
+            get_prefs,
+            link_status,
+            link_claude,
+            statusline_seen,
+            open_dashboard
+        ])
         .run(tauri::generate_context!())
         .expect("claude-jauge failed to start");
 }

@@ -10,5 +10,7 @@ export default defineConfig({
     sourcemap: false,
     outDir: 'dist',
     emptyOutDir: true,
+    // Two pages: the widget and the dashboard window.
+    rollupOptions: { input: { main: 'index.html', dashboard: 'dashboard.html' } },
   },
 });
