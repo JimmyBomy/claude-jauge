@@ -33,6 +33,7 @@ function gauge(w: WidgetWindow, lang: 'fr' | 'en'): string {
     <div class="fill" style="width:${left}%"></div>
   </div>
   ${w.alertText ? `<div class="alert">${esc(w.alertText)}</div>` : ''}
+  ${w.noteText ? `<div class="note">${esc(w.noteText)}</div>` : ''}
 </section>`;
 }
 

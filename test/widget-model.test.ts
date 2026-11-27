@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildWidgetView, type SetupInfo } from '../src/widget-model.js';
+import { buildWidgetView, modelName, type SetupInfo } from '../src/widget-model.js';
 import { NOW, TZ, readFixture } from './helpers.js';
 
 const history = readFixture('history-sample.jsonl');
@@ -22,7 +22,7 @@ test('widget view: gauges, levels, forecast alert (French)', () => {
 test('widget view: today tokens and top model (English)', () => {
   const v = buildWidgetView(history, { day: '2026-11-26', total: 1_250_000, byModel: { 'claude-opus-4-5-20251101': 1_000_000, 'claude-haiku-4-5-20251001': 250_000 } }, NOW, 'en', TZ);
   assert.equal(v.todayText, 'Today: 1.3M tokens');
-  assert.equal(v.topModelText, 'opus-4-5 80%');
+  assert.equal(v.topModelText, '80% Opus 4.5');
 });
 
 test('widget view: empty history explains the setup, stale data is flagged', () => {
@@ -39,7 +39,8 @@ test('widget view: a window past its reset shows 100 % left', () => {
   const five = v.windows.find((w) => w.key === 'five')!;
   assert.equal(five.leftText, '100%');
   assert.equal(five.level, 'normal');
-  assert.match(five.resetText, /window reset at 10:00/);
+  assert.equal(five.resetText, 'new window');
+  assert.equal(five.noteText, 'Reset at 10:00. Numbers come back with your next Claude Code message.');
 });
 
 test('widget view: the desktop app explains what is missing and offers one click', () => {
@@ -54,4 +55,11 @@ test('widget view: the desktop app explains what is missing and offers one click
   assert.match(view({ link: { state: 'badJson' } }).emptyText ?? '', /settings\.json/);
   assert.equal(view({ link: { state: 'linked' } }).action, undefined);
   assert.doesNotMatch(notLinked.emptyText ?? '', /claude-jauge install/, 'no command to type for .exe users');
+});
+
+test('widget view: model names read like products', () => {
+  assert.equal(modelName('claude-opus-4-5-20251101'), 'Opus 4.5');
+  assert.equal(modelName('claude-opus-5-5'), 'Opus 5.5');
+  assert.equal(modelName('claude-sonnet-4-20250514'), 'Sonnet 4');
+  assert.equal(modelName('claude-haiku-4-5'), 'Haiku 4.5');
 });
