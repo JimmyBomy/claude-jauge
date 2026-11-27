@@ -34,3 +34,26 @@ root.innerHTML = shots
     return `<div class="wall ${walls[i % walls.length]}" data-state="${name}"><div class="widget">${renderWidget(view)}</div></div>`;
   })
   .join('');
+
+// Demo mode (?demo): one widget on a wallpaper, replayed step by step for the README GIF.
+// The page exposes demoStep(n); every value is invented.
+if (params.has('demo')) {
+  const steps = 14;
+  const fiveReset = now + 3 * 3600 + 12 * 60;
+  const render = (n: number): void => {
+    const points: string[] = [];
+    for (let i = 0; i <= n; i++) {
+      const t = now - (n - i) * 600;
+      const p5 = 18 + i * 5.2;
+      const pw = 31 + i * 0.6;
+      points.push(JSON.stringify({ t, five: { pct: p5, reset: fiveReset }, week: { pct: pw, reset: week } }));
+    }
+    const total = 420_000 + n * 61_000;
+    const demoUsage = { day: '', total, byModel: { 'claude-opus-4-5': Math.round(total * 0.82), 'claude-sonnet-4-5': Math.round(total * 0.18) } };
+    const view = buildWidgetView(points.join('\n'), demoUsage, now, lang);
+    root.innerHTML = `<div class="wall aurora demo"><div class="widget">${renderWidget(view)}</div></div>`;
+  };
+  (window as unknown as { demoStep: (n: number) => void; demoSteps: number }).demoStep = render;
+  (window as unknown as { demoSteps: number }).demoSteps = steps;
+  render(0);
+}

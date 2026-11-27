@@ -178,7 +178,7 @@ function gauges(d){
     box.insertAdjacentHTML('beforeend','<article class="card glass" style="--lv:var(--'+lv+')">'+
       '<div class="gauge-top"><h2>'+esc(g.key==='five'?S.five:S.week)+'</h2><span class="badge">'+ICONS[lv]+esc(S.levels[lv])+'</span></div>'+
       '<div class="big">'+pctTxt(left)+'<span>'+esc(S.left)+'</span></div>'+
-      '<div class="track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+Math.round(used)+'"><div class="fill" style="width:'+Math.min(100,used)+'%"></div></div>'+
+      '<div class="track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+Math.round(left)+'"><div class="fill" style="width:'+Math.max(0,Math.min(100,left))+'%"></div></div>'+
       '<div class="meta"><b>'+pctTxt(used)+'</b> '+esc(S.used)+' · '+esc(g.resetText)+'</div>'+
       (g.forecastText?'<div class="fc'+(g.forecastKind==='hit'||g.forecastKind==='reached'?' alert':'')+'">'+esc(g.forecastText)+'</div>':'')+'</article>');
   }

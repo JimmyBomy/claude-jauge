@@ -11,6 +11,11 @@ A status line, a history, a forecast and a small dashboard. Everything stays on 
 
 [Version française](README.md)
 
+![Demo: the widget updates while Claude Code works, then the dashboard](docs/demo.gif)
+
+**Windows:** [download the installer](https://github.com/JimmyBomy/claude-jauge/releases/latest), run it, it is plugged in.
+<sub>Demo made with invented data.</sub>
+
 ## Why claude-jauge?
 
 - **A real Windows widget.** An `.exe` installer of about 1 MB, a small always-visible window that starts with Windows. No need to open a terminal to see where you stand.
