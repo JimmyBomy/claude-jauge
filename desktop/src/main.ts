@@ -51,6 +51,7 @@ async function refresh(): Promise<void> {
   const view: WidgetView = buildWidgetView(history, usage, Math.floor(Date.now() / 1000), lang, undefined, setup);
   app.innerHTML = renderWidget(view);
   app.querySelector<HTMLButtonElement>('[data-action="hide"]')?.addEventListener('click', () => void win.hide());
+  app.querySelector<HTMLButtonElement>('[data-action="dashboard"]')?.addEventListener('click', openDashboard);
   app.querySelector<HTMLButtonElement>('[data-action="link"], [data-action="replace"]')?.addEventListener('click', (e) => {
     const force = (e.currentTarget as HTMLElement).dataset.action === 'replace';
     void invoke('link_claude', { force }).finally(() => void refresh());
@@ -62,9 +63,16 @@ async function refresh(): Promise<void> {
   }
 }
 
+function openDashboard(): void {
+  void invoke('open_dashboard');
+}
+
+// A single press drags the widget; a double click opens the dashboard.
 app.addEventListener('mousedown', (e) => {
   const target = e.target as HTMLElement;
-  if (e.button === 0 && !target.closest('button')) void win.startDragging();
+  if (e.button !== 0 || target.closest('button')) return;
+  if (e.detail >= 2) openDashboard();
+  else void win.startDragging();
 });
 
 applyPrefs(await invoke<Prefs>('get_prefs').catch(() => ({ glass: 'none', alwaysOnTop: true }) as Prefs));

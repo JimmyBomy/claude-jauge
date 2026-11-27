@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "dashboard",
+  "description": "The dashboard window only reads data through the app's own commands.",
+  "windows": ["dashboard"],
+  "permissions": ["core:default"]
+}

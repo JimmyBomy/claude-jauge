@@ -79,6 +79,8 @@ left of the 5-hour and weekly limits, the state (normal, watch out, near limit),
   says why, and `claude-jauge doctor` checks the whole chain.
 - Starts with Windows from the first launch. To opt out: right click the tray icon and untick "Start with Windows".
   That choice is kept, and uninstalling also removes the startup entry.
+- **Dashboard in one click**: the chart button on the widget, a double click on the widget, or "Open the dashboard" in the
+  tray menu. Same charts as `claude-jauge web`, with your real data, no Node needed.
 - Left click the tray icon to show or hide. Right click for: always on top, glass effect (semi-opaque by default,
   Mica or Acrylic), start with Windows, quit.
 - Windows may show a SmartScreen warning on first launch: the installer is not signed (signing certificates cost

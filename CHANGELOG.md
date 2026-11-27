@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.1 (2026-11-27)
+
+- Tableau de bord dans l'app Windows, en un clic : bouton dans le widget, double-clic sur le widget ou
+  « Ouvrir le tableau de bord » dans le menu de l'icône. Vraies données, sans Node ni serveur.
+- Le code du tableau de bord est partagé entre `claude-jauge web` et l'app (une seule source).
+- Widget plus lisible : le chiffre ne passe plus à la ligne, « nouvelle fenêtre » après une remise à zéro avec
+  une phrase claire sous la barre, et « 100 % Opus 4.5 » en bas.
+- Tableau de bord : la barre montre le restant, comme le gros chiffre.
+
 ## 0.1.0 (2026-11-27)
 
 - `install` / `uninstall` : statusLine dans `~/.claude/settings.json`, avec sauvegarde et restauration.

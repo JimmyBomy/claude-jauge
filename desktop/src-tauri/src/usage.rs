@@ -161,6 +161,47 @@ impl Scanner {
     }
 }
 
+/// Tokens of one local day for one model (the dashboard's daily bars and model table).
+#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
+pub struct DayModelTokens {
+    pub day: String,
+    pub model: String,
+    pub tokens: u64,
+}
+
+/// Totals per local day and model since `since` (inclusive), for the dashboard.
+/// Files not modified since then are skipped; replies are de-duplicated like the CLI does.
+pub fn by_day(root: &Path, since: DateTime<FixedOffset>) -> Vec<DayModelTokens> {
+    let tz = *since.offset();
+    let start = since.date_naive();
+    let since_time = SystemTime::from(since);
+    let mut files = Vec::new();
+    list_jsonl(root, &mut files);
+    let mut seen = HashSet::new();
+    let mut totals: BTreeMap<(String, String), u64> = BTreeMap::new();
+    for file in files {
+        let recent = fs::metadata(&file).and_then(|m| m.modified()).map(|m| m >= since_time).unwrap_or(false);
+        if !recent {
+            continue;
+        }
+        let Ok(text) = fs::read_to_string(&file) else { continue };
+        for line in text.lines() {
+            let Some(reply) = parse_line(line) else { continue };
+            let day = reply.at.with_timezone(&tz).date_naive();
+            if day < start {
+                continue;
+            }
+            if let Some(key) = reply.key {
+                if !seen.insert(key) {
+                    continue;
+                }
+            }
+            *totals.entry((day.format("%Y-%m-%d").to_string(), reply.model)).or_insert(0) += reply.tokens;
+        }
+    }
+    totals.into_iter().map(|((day, model), tokens)| DayModelTokens { day, model, tokens }).collect()
+}
+
 /// Last `max_bytes` of a text file, starting at a line boundary. Empty if missing.
 pub fn tail(file: &Path, max_bytes: u64) -> String {
     let Ok(mut handle) = File::open(file) else { return String::new() };
@@ -251,6 +292,35 @@ mod tests {
         assert_eq!(tail(&file, 1000), "first line\nsecond\nthird\n");
         assert_eq!(tail(&file, 10), "third\n");
         assert_eq!(tail(&dir.join("missing"), 10), "");
+        fs::remove_dir_all(&dir).unwrap();
+    }
+
+    #[test]
+    fn sums_per_day_and_model_since_a_date() {
+        let dir = std::env::temp_dir().join(format!("claude-jauge-byday-{}", std::process::id()));
+        let _ = fs::remove_dir_all(&dir);
+        fs::create_dir_all(dir.join("p")).unwrap();
+        let line = |ts: &str, id: &str, model: &str, n: u64| {
+            format!(r#"{{"timestamp":"{ts}","requestId":"r{id}","message":{{"id":"m{id}","model":"{model}","usage":{{"input_tokens":{n},"output_tokens":0}}}}}}"#)
+        };
+        let text = [
+            line("2026-11-20T10:00:00Z", "0", "claude-opus-4-5", 999),
+            line("2026-11-25T10:00:00Z", "1", "claude-opus-4-5", 100),
+            line("2026-11-25T11:00:00Z", "1", "claude-opus-4-5", 100),
+            line("2026-11-25T23:30:00Z", "2", "claude-haiku-4-5", 7),
+            line("2026-11-26T08:00:00Z", "3", "claude-opus-4-5", 50),
+        ]
+        .join("\n");
+        fs::write(dir.join("p/s.jsonl"), text + "\n").unwrap();
+        let paris = FixedOffset::east_opt(3600).unwrap();
+        let since = paris.with_ymd_and_hms(2026, 11, 22, 0, 0, 0).unwrap();
+        let rows = by_day(&dir, since);
+        let got: Vec<_> = rows.iter().map(|r| (r.day.as_str(), r.model.as_str(), r.tokens)).collect();
+        assert_eq!(
+            got,
+            [("2026-11-25", "claude-opus-4-5", 100), ("2026-11-26", "claude-haiku-4-5", 7), ("2026-11-26", "claude-opus-4-5", 50)],
+            "duplicates removed, older days skipped, days in local time"
+        );
         fs::remove_dir_all(&dir).unwrap();
     }
 }

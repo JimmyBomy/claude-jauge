@@ -1,6 +1,6 @@
 [package]
 name = "claude-jauge-desktop"
-version = "0.1.0"
+version = "0.1.1"
 description = "claude-jauge desktop widget"
 authors = ["Jimmy Bomy"]
 license = "MIT"

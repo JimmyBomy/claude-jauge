@@ -1,7 +1,7 @@
 {
   "name": "claude-jauge-desktop",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "claude-jauge Windows widget (Tauri 2).",
   "license": "MIT",
   "type": "module",

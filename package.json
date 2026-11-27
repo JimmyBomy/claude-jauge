@@ -1,6 +1,6 @@
 {
   "name": "claude-jauge",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "See how much of your Claude Pro/Max limits is left while you use Claude Code: status line, history, forecast, token reports. 100% local, zero dependencies.",
   "keywords": [
     "claude",
