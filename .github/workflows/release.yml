@@ -28,6 +28,16 @@ jobs:
       - run: npm test
       - run: npm ci
         working-directory: desktop
+      - name: Release notes (from .github/release-notes/<tag>.md when it exists)
+        id: notes
+        shell: bash
+        run: |
+          file=".github/release-notes/${GITHUB_REF_NAME}.md"
+          {
+            echo 'body<<NOTES_END'
+            if [ -f "$file" ]; then cat "$file"; else echo "Voir CHANGELOG.md / See CHANGELOG.md"; fi
+            echo 'NOTES_END'
+          } >> "$GITHUB_OUTPUT"
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -35,8 +45,6 @@ jobs:
           projectPath: desktop
           tagName: ${{ github.ref_name }}
           releaseName: claude-jauge ${{ github.ref_name }}
-          releaseBody: |
-            Windows installer for the claude-jauge widget. See CHANGELOG.md for what changed.
-            Installeur Windows du widget claude-jauge. Voir CHANGELOG.md pour les nouveautés.
+          releaseBody: ${{ steps.notes.outputs.body }}
           releaseDraft: false
           prerelease: false
